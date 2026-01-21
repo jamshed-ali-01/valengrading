@@ -27,6 +27,11 @@
         🏷️ <strong>Manage Label Types</strong><br>
         <small>Classic, Premium, Custom label types and pricing</small>
     </a>
+
+      <a href="{{ route('admin.submission-types.index') }}">
+        📝 <strong>Manage Submission Types</strong><br>
+        <small>Grading, Reholder, Crossover, Authentication services</small>
+    </a>
    
 </div>
 

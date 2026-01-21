@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceLevelController;
 use App\Http\Controllers\Admin\LabelTypeController;
+use App\Http\Controllers\Admin\SubmissionTypeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,9 @@ Route::prefix('admin')
 
         // Yeh line add karni hai
         Route::resource('/label-types', LabelTypeController::class)
+            ->except(['show']);
+
+        Route::resource('/submission-types', SubmissionTypeController::class)
             ->except(['show']);
 
         Route::post('/logout', function () {

@@ -1,0 +1,153 @@
+@extends('layouts.admin')
+
+@section('title', 'Submission Details: ' . $submission->submission_no)
+
+@section('content')
+<div class="space-y-6 max-w-5xl mx-auto">
+    <!-- Header with Status Update -->
+    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-wrap items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">{{ $submission->submission_no }}</h3>
+                <p class="text-sm text-gray-500">Submitted on {{ $submission->created_at->format('M d, Y H:i') }}</p>
+            </div>
+        </div>
+
+        <form action="{{ route('admin.submissions.update-status', $submission) }}" method="POST" class="flex items-center gap-3">
+            @csrf
+            @method('PATCH')
+            <label class="text-sm font-medium text-gray-400">Update Status:</label>
+            <select name="status" class="bg-[#0f1115] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
+                @foreach(['draft', 'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
+                    <option value="{{ $status }}" {{ $submission->status === $status ? 'selected' : '' }}>
+                        {{ ucwords(str_replace('_', ' ', $status)) }}
+                    </option>
+                @endforeach
+            </select>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-all text-sm">Update</button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Customer Info -->
+        <div class="bg-[#1a1d24]/80 border border-white/5 rounded-2xl p-6 shadow-xl">
+            <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Customer Details
+            </h4>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-xs text-gray-500">Name</p>
+                    <p class="font-medium text-white">{{ $submission->guest_name ?? $submission->user->name }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Email</p>
+                    <p class="font-medium text-white">{{ $submission->user->email ?? 'Guest' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Service Level</p>
+                    <p class="font-medium text-white">{{ $submission->serviceLevel->name }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Type</p>
+                    <p class="font-medium text-white">{{ $submission->submissionType->name }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="bg-[#1a1d24]/80 border border-white/5 rounded-2xl p-6 shadow-xl md:col-span-2">
+            <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Shipping Address
+            </h4>
+            @if($submission->shippingAddress)
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-xs text-gray-500">Full Name</p>
+                        <p class="text-white">{{ $submission->shippingAddress->full_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Contact</p>
+                        <p class="text-white">{{ $submission->shippingAddress->number }}</p>
+                        <p class="text-white">{{ $submission->shippingAddress->email }}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-xs text-gray-500">Address</p>
+                        <p class="text-white leading-relaxed">
+                            {{ $submission->shippingAddress->address_line_1 }}<br>
+                            @if($submission->shippingAddress->address_line_2) {{ $submission->shippingAddress->address_line_2 }}<br> @endif
+                            {{ $submission->shippingAddress->city }}, {{ $submission->shippingAddress->post_code }}<br>
+                            {{ $submission->shippingAddress->country }}
+                        </p>
+                    </div>
+                </div>
+            @else
+                <p class="text-gray-500 italic">No shipping address recorded.</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Cards Itemized List -->
+    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-white/5">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Itemized Cards ({{ count($submission->cards) }})
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-white/5 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4">Card Info</th>
+                        <th class="px-6 py-4 text-center">Label Type</th>
+                        <th class="px-6 py-4 text-center">Qty</th>
+                        <th class="px-6 py-4">Notes</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    @forelse($submission->cards as $card)
+                        <tr class="hover:bg-white/[0.02] transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="text-white font-medium">{{ $card->title }}</div>
+                                <div class="text-xs text-gray-500">{{ $card->year }} {{ $card->set_name }} #{{ $card->card_number }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                @if($card->labelType)
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                        {{ $card->labelType->name }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-600">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-center font-bold text-white">{{ $card->qty }}</td>
+                            <td class="px-6 py-4 text-xs text-gray-400 max-w-xs truncate">{{ $card->notes ?: '-' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">
+                                @if($submission->card_entry_mode === 'easy')
+                                    This was an "Easy Mode" submission with {{ $submission->total_cards }} cards. Itemization details were not provided.
+                                @else
+                                    No cards found.
+                                @endif
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+        <a href="{{ route('admin.submissions.index') }}" class="px-6 py-3 rounded-xl bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 transition-all font-medium border border-white/5">
+            Back to List
+        </a>
+    </div>
+</div>
+@endsection

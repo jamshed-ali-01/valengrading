@@ -10,7 +10,7 @@ class LabelType extends Model
     /** @use HasFactory<\Database\Factories\LabelTypeFactory> */
     use HasFactory;
 
-     protected $fillable = [
+    protected $fillable = [
         'name',
         'description',
         'price_adjustment',
@@ -33,11 +33,11 @@ class LabelType extends Model
         if ($this->price_adjustment == 0) {
             return 'Free';
         }
-        
+
         if ($this->price_adjustment > 0) {
-            return '+€' . number_format($this->price_adjustment, 2);
+            return '+€'.number_format($this->price_adjustment, 2);
         }
-        
-        return '-€' . number_format(abs($this->price_adjustment), 2);
+
+        return '-€'.number_format(abs($this->price_adjustment), 2);
     }
 }

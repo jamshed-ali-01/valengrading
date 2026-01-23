@@ -16,7 +16,7 @@ class LabelTypeFactory extends Factory
      */
     public function definition(): array
     {
-         return [
+        return [
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
             'price_adjustment' => $this->faker->randomFloat(2, 0, 20),
@@ -24,7 +24,8 @@ class LabelTypeFactory extends Factory
             'is_active' => true,
         ];
     }
-     public function classic(): static
+
+    public function classic(): static
     {
         return $this->state(fn (array $attributes) => [
             'name' => 'Classic',

@@ -13,7 +13,7 @@ class SubmissionTypeController extends Controller
     public function index(): View
     {
         $submissionTypes = SubmissionType::orderBy('order')->get();
-        
+
         return view('admin.submission-types.index', compact('submissionTypes'));
     }
 

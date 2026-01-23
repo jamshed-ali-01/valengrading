@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->session()->has('pending_submission_id')) {
+            return redirect()->route('submission.step4');
+        }
+
         $user = Auth::user();
 
         if ($user->role === 'admin') {

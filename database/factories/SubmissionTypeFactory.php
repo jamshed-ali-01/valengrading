@@ -25,7 +25,7 @@ class SubmissionTypeFactory extends Factory
         ];
     }
 
-     public function grading(): static
+    public function grading(): static
     {
         return $this->state(fn (array $attributes) => [
             'name' => 'Grading',

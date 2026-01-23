@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
+        web: __DIR__.'/../routes/web.php',
 
         then: function () {
             Route::middleware('web')
@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/user.php'));
         },
 
-        commands: __DIR__ . '/../routes/console.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {

@@ -16,7 +16,7 @@ class ServiceLevelFactory extends Factory
      */
     public function definition(): array
     {
-          return [
+        return [
             'name' => $this->faker->word(),
             'delivery_time' => '15-20 Business Days',
             'min_submission' => 5,
@@ -25,9 +25,10 @@ class ServiceLevelFactory extends Factory
             'is_active' => true,
         ];
     }
+
     public function standard(): static
     {
-         return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'name' => 'Standard',
             'delivery_time' => '15-20 Business Days',
             'min_submission' => 5,
@@ -49,7 +50,7 @@ class ServiceLevelFactory extends Factory
 
     public function elite(): static
     {
-       return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'name' => 'Elite',
             'delivery_time' => '3-5 Business Days',
             'min_submission' => null, // Elite has no minimum

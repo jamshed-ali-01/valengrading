@@ -10,7 +10,7 @@ class SubmissionType extends Model
     /** @use HasFactory<\Database\Factories\SubmissionTypeFactory> */
     use HasFactory;
 
-     protected $fillable = [
+    protected $fillable = [
         'name',
         'title',
         'description',

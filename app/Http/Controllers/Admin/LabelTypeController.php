@@ -13,7 +13,7 @@ class LabelTypeController extends Controller
     public function index(): View
     {
         $labelTypes = LabelType::orderBy('order')->get();
-        
+
         return view('admin.label-types.index', compact('labelTypes'));
     }
 

@@ -9,6 +9,7 @@ class ServiceLevel extends Model
 {
     /** @use HasFactory<\Database\Factories\ServiceLevelFactory> */
     use HasFactory;
+
     protected $fillable = [
         'name',
         'delivery_time',
@@ -27,6 +28,7 @@ class ServiceLevel extends Model
             'is_active' => 'boolean',
         ];
     }
+
     public function getMinSubmissionDisplayAttribute(): ?string
     {
         if ($this->min_submission === null) {

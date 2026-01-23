@@ -1,62 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Submission Type - Admin Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .error { color: red; font-size: 14px; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h1>Add New Submission Type</h1>
-    
-    <form method="POST" action="{{ route('admin.submission-types.store') }}">
-        @csrf
-        
-        <div class="form-group">
-            <label for="name">Submission Type Name*</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="e.g., Grading, Reholder, Authentication" required>
-            @error('name')<div class="error">{{ $message }}</div>@enderror
-        </div>
-        
-        <div class="form-group">
-            <label for="title">Display Title</label>
-            <input type="text" id="title" name="title" value="{{ old('title') }}" placeholder="e.g., Grading Service, Authentication Service">
-            @error('title')<div class="error">{{ $message }}</div>@enderror
-        </div>
-        
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="3">{{ old('description') }}</textarea>
-            @error('description')<div class="error">{{ $message }}</div>@enderror
-        </div>
-        
-        <div class="form-group">
-            <label for="order">Display Order*</label>
-            <input type="number" id="order" name="order" value="{{ old('order', 0) }}" required>
-            @error('order')<div class="error">{{ $message }}</div>@enderror
-        </div>
-        
-        <div class="form-group">
-            <label for="is_active">Status*</label>
-            <select id="is_active" name="is_active" required>
-                <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
-                <option value="0" {{ old('is_active', '1') == '0' ? 'selected' : '' }}>Inactive</option>
-            </select>
-            @error('is_active')<div class="error">{{ $message }}</div>@enderror
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Create Submission Type</button>
-        <a href="{{ route('admin.submission-types.index') }}" class="btn btn-secondary">Cancel</a>
-    </form>
+@extends('layouts.admin')
+
+@section('title', 'Add New Submission Type')
+
+@section('content')
+<div class="max-w-2xl mx-auto">
+    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-8 shadow-2xl">
+        <form method="POST" action="{{ route('admin.submission-types.store') }}" class="space-y-6">
+            @csrf
+            
+            <div class="space-y-2">
+                <label for="name" class="text-sm font-medium text-gray-400">Submission Type Name*</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" 
+                    class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="e.g., Grading, Reholder, Authentication" required>
+                @error('name')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+            </div>
+            
+            <div class="space-y-2">
+                <label for="title" class="text-sm font-medium text-gray-400">Display Title</label>
+                <input type="text" id="title" name="title" value="{{ old('title') }}" 
+                    class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    placeholder="e.g., Grading Service, Authentication Service">
+                @error('title')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+            </div>
+            
+            <div class="space-y-2">
+                <label for="description" class="text-sm font-medium text-gray-400">Description</label>
+                <textarea id="description" name="description" rows="3"
+                    class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
+                    placeholder="Enter service description...">{{ old('description') }}</textarea>
+                @error('description')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="order" class="text-sm font-medium text-gray-400">Display Order*</label>
+                    <input type="number" id="order" name="order" value="{{ old('order', 0) }}" 
+                        class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                        required>
+                    @error('order')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+                
+                <div class="space-y-2">
+                    <label for="is_active" class="text-sm font-medium text-gray-400">Status*</label>
+                    <select id="is_active" name="is_active" 
+                        class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors appearance-none"
+                        required>
+                        <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
+                        <option value="0" {{ old('is_active', '1') == '0' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                    @error('is_active')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+            </div>
+            
+            <div class="pt-4 flex items-center justify-end gap-4">
+                <a href="{{ route('admin.submission-types.index') }}" class="px-6 py-3 rounded-xl bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 transition-all font-medium">Cancel</a>
+                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all duration-300">
+                    Create Submission Type
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-</body>
-</html>
+@endsection

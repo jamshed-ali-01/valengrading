@@ -13,7 +13,7 @@ class ServiceLevelController extends Controller
     public function index(): View
     {
         $serviceLevels = ServiceLevel::orderBy('order')->get();
-        
+
         return view('admin.service-levels.index', compact('serviceLevels'));
     }
 

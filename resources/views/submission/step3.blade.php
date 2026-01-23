@@ -8,17 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-<div class="min-h-screen bg-[#0f1115] text-white font-['Outfit'] py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-[#15171A] text-white font-['Outfit'] py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
         <!-- Progress Steps -->
         <div class="mb-12">
             <div class="flex items-center justify-between relative">
-                <div class="absolute left-0 top-1/2 w-full h-1 bg-[#1f2937] -z-10 rounded-full"></div>
+                <div class="absolute left-0 top-1/2 w-full h-1 bg-white/5 -z-10 rounded-full"></div>
                 
                 @foreach(['Submission Type', 'Service Level', 'Card Details', 'Shipping', 'Review', 'Payment'] as $index => $step)
                     <div class="flex flex-col items-center">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm mb-2 transition-all duration-300 relative
-                            {{ $index + 1 <= 3 ? 'bg-gradient-to-r from-blue-500 to-purple-600 shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-110' : 'bg-[#1f2937] text-gray-500' }}">
+                            {{ $index + 1 <= 3 ? 'bg-gradient-to-r from-red-500 to-[#A3050A] shadow-[0_0_15px_rgba(163,5,10,0.4)] scale-110' : 'bg-[#232528] text-gray-500' }}">
                             @if($index + 1 < 3)
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -33,13 +33,13 @@
             </div>
         </div>
 
-        <div class="bg-[#1a1d24]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl relative overflow-hidden group">
+        <div class="bg-[#232528]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl relative overflow-hidden group">
             <!-- Glassmorphism Background -->
-            <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-purple-500/15"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-blue-500/15"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-red-500/15"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-red-900/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-red-900/15"></div>
 
             <div class="mb-8">
-                <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-2">Card Details</h2>
+                <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-[#A3050A] mb-2">Card Details</h2>
                 <p class="text-gray-400">Enter your card details using Easy or Detailed mode.</p>
             </div>
 
@@ -49,8 +49,8 @@
                 <input type="hidden" id="min_cards" value="{{ $serviceLevel->min_submission ?? 0 }}">
                 
                 <!-- Toggle Switch -->
-                <div class="p-1.5 bg-[#0f1115] rounded-xl flex items-center mb-8 border border-white/10 w-fit mx-auto">
-                    <button type="button" onclick="setMode('easy')" id="easyModeBtn" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-white bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
+                <div class="p-1.5 bg-[#15171A] rounded-xl flex items-center mb-8 border border-white/10 w-fit mx-auto">
+                    <button type="button" onclick="setMode('easy')" id="easyModeBtn" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-white bg-gradient-to-r from-red-600 to-[#A3050A] shadow-lg">
                         Easy Submission
                     </button>
                     <button type="button" onclick="setMode('detailed')" id="detailedModeBtn" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-gray-400 hover:text-white">
@@ -70,13 +70,13 @@
                             <label class="block text-sm font-medium text-gray-300 mb-2">Total Card Count</label>
                             <input type="number" name="total_cards" id="total_cards" min="1" 
                                 value="{{ old('total_cards', $submission->total_cards ?? '') }}"
-                                class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-center text-xl font-bold placeholder-gray-700"
+                                class="w-full bg-[#15171A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-center text-xl font-bold placeholder-gray-700"
                                 placeholder="0">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">Label Type</label>
-                            <select name="label_type_id" id="easy_mode_label_type" class="w-full bg-[#0f1115] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 appearance-none cursor-pointer">
+                            <select name="label_type_id" id="easy_mode_label_type" class="w-full bg-[#15171A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 appearance-none cursor-pointer">
                                 <option value="">Select Label Type</option>
                                 @foreach($labelTypes as $type)
                                     <option value="{{ $type->id }}" {{ (old('label_type_id', $submission->label_type_id ?? '') == $type->id) ? 'selected' : '' }}>
@@ -90,15 +90,15 @@
 
                 <!-- Detailed Mode -->
                 <div id="detailedMode" class="hidden">
-                     <div class="bg-[#0f1115] rounded-xl border border-white/10 overflow-hidden mb-6">
+                     <div class="bg-[#15171A] rounded-xl border border-white/10 overflow-hidden mb-6">
                         <div class="p-4 bg-white/5 border-b border-white/10 flex justify-between items-center">
                             <h3 class="font-bold text-white">Itemized List</h3>
-                            <button type="button" onclick="addCard()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-blue-500/20">+ Add Card</button>
+                            <button type="button" onclick="addCard()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-red-900/20">+ Add Card</button>
                         </div>
                         
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-400">
-                                <thead class="text-xs text-gray-300 uppercase bg-[#0f1115] border-b border-white/10">
+                                <thead class="text-xs text-gray-300 uppercase bg-[#15171A] border-b border-white/10">
                                     <tr>
                                         <th class="px-4 py-3 min-w-[200px]">Title / Player</th>
                                         <th class="px-4 py-3 min-w-[150px]">Set Name</th>
@@ -118,7 +118,7 @@
                         
                         <div id="detailed-empty-state" class="p-12 text-center text-gray-500">
                             <p class="mb-2">No cards added yet.</p>
-                            <button type="button" onclick="addCard()" class="text-blue-400 hover:text-blue-300 hover:underline">Click to start adding cards</button>
+                            <button type="button" onclick="addCard()" class="text-red-400 hover:text-red-300 hover:underline">Click to start adding cards</button>
                         </div>
                     </div>
                 </div>
@@ -132,18 +132,18 @@
                 @enderror
 
                 <div class="flex justify-between items-center pt-8 mt-8 border-t border-white/10">
-                    <a href="{{ route('submission.step2') }}" class="px-6 py-3 rounded-xl bg-[#1f2937] text-gray-300 hover:text-white hover:bg-[#2d3748] transition-all duration-300 font-medium border border-white/5">
+                    <a href="{{ route('submission.step2') }}" class="px-6 py-3 rounded-xl bg-white/5 text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300 font-medium border border-white/5">
                         Back
                     </a>
                     
-                    <button type="submit" id="submitBtn" class="group relative px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="submit" id="submitBtn" class="group relative px-8 py-3 rounded-xl bg-gradient-to-r from-red-600 to-[#A3050A] text-white font-bold shadow-[0_0_20px_rgba(163,5,10,0.3)] hover:shadow-[0_0_30px_rgba(163,5,10,0.5)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                         <span class="relative z-10 flex items-center gap-2">
                             Proceed to Shipping
                             <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                             </svg>
                         </span>
-                        <div class="absolute inset-0 rounded-xl bg-white/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div class="absolute inset-0 rounded-xl bg-white/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </button>
                 </div>
             </form>
@@ -174,10 +174,10 @@
         modeInput.value = mode;
         if (mode === 'easy') {
             easyModeBtn.classList.remove('text-gray-400', 'hover:text-white');
-            easyModeBtn.classList.add('text-white', 'bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'shadow-lg');
+            easyModeBtn.classList.add('text-white', 'bg-gradient-to-r', 'from-red-600', 'to-[#A3050A]', 'shadow-lg');
             
             detailedModeBtn.classList.add('text-gray-400', 'hover:text-white');
-            detailedModeBtn.classList.remove('text-white', 'bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'shadow-lg');
+            detailedModeBtn.classList.remove('text-white', 'bg-gradient-to-r', 'from-red-600', 'to-[#A3050A]', 'shadow-lg');
             
             easyModeDiv.classList.remove('hidden');
             detailedModeDiv.classList.add('hidden');
@@ -189,10 +189,10 @@
             document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => el.removeAttribute('required'));
         } else {
             detailedModeBtn.classList.remove('text-gray-400', 'hover:text-white');
-            detailedModeBtn.classList.add('text-white', 'bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'shadow-lg');
+            detailedModeBtn.classList.add('text-white', 'bg-gradient-to-r', 'from-red-600', 'to-[#A3050A]', 'shadow-lg');
             
             easyModeBtn.classList.add('text-gray-400', 'hover:text-white');
-            easyModeBtn.classList.remove('text-white', 'bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'shadow-lg');
+            easyModeBtn.classList.remove('text-white', 'bg-gradient-to-r', 'from-red-600', 'to-[#A3050A]', 'shadow-lg');
             
             detailedModeDiv.classList.remove('hidden');
             easyModeDiv.classList.add('hidden');
@@ -215,24 +215,24 @@
         
         const index = cardsContainer.children.length;
         const row = document.createElement('tr');
-        row.className = 'bg-[#0f1115]/50 hover:bg-white/5 transition-colors group/row';
+        row.className = 'bg-[#15171A]/50 hover:bg-white/5 transition-colors group/row';
         
         let labelOptions = '<option value="" disabled selected>Select</option>';
         window.labelTypes.forEach(type => {
-             let displayPrice = type.price_adjustment == 0 ? 'Free' : (type.price_adjustment > 0 ? '+£'+type.price_adjustment : '-£'+Math.abs(type.price_adjustment)); // Assuming £/€ consistency
+             let displayPrice = type.price_adjustment == 0 ? 'Free' : (type.price_adjustment > 0 ? '+€'+type.price_adjustment : '-€'+Math.abs(type.price_adjustment));
              let selected = data && data.label_type_id == type.id ? 'selected' : '';
              labelOptions += `<option value="${type.id}" ${selected}>${type.name} (${displayPrice})</option>`;
         });
 
         row.innerHTML = `
-            <td class="p-2 min-w-[200px]"><input type="text" name="cards[${index}][title]" value="${data ? data.title || '' : ''}" placeholder="Title / Player" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600" required></td>
-            <td class="p-2 min-w-[150px]"><input type="text" name="cards[${index}][set_name]" value="${data ? data.set_name || '' : ''}" placeholder="Set" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600"></td>
-            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][year]" value="${data ? data.year || '' : ''}" placeholder="Year" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600"></td>
-            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][card_number]" value="${data ? data.card_number || '' : ''}" placeholder="#" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600"></td>
-            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][lang]" value="${data ? data.lang || '' : ''}" placeholder="Lang" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600"></td>
-            <td class="p-2 min-w-[150px] hidden md:table-cell"><input type="text" name="cards[${index}][notes]" value="${data ? data.notes || '' : ''}" placeholder="Notes" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-600"></td>
+            <td class="p-2 min-w-[200px]"><input type="text" name="cards[${index}][title]" value="${data ? data.title || '' : ''}" placeholder="Title / Player" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600" required></td>
+            <td class="p-2 min-w-[150px]"><input type="text" name="cards[${index}][set_name]" value="${data ? data.set_name || '' : ''}" placeholder="Set" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600"></td>
+            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][year]" value="${data ? data.year || '' : ''}" placeholder="Year" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600"></td>
+            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][card_number]" value="${data ? data.card_number || '' : ''}" placeholder="#" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600"></td>
+            <td class="p-2 min-w-[100px]"><input type="text" name="cards[${index}][lang]" value="${data ? data.lang || '' : ''}" placeholder="Lang" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600"></td>
+            <td class="p-2 min-w-[150px] hidden md:table-cell"><input type="text" name="cards[${index}][notes]" value="${data ? data.notes || '' : ''}" placeholder="Notes" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 placeholder-gray-600"></td>
             <td class="p-2 min-w-[180px]">
-                <select name="cards[${index}][label_type_id]" class="w-full bg-[#1a1d24] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer" required>
+                <select name="cards[${index}][label_type_id]" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-1 focus:ring-red-500 appearance-none cursor-pointer" required>
                     ${labelOptions}
                 </select>
             </td>

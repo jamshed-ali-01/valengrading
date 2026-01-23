@@ -5,9 +5,9 @@
 @section('content')
 <div class="space-y-6 max-w-5xl mx-auto">
     <!-- Header with Status Update -->
-    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-wrap items-center justify-between gap-6">
+    <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-wrap items-center justify-between gap-6">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
+            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             </div>
             <div>
@@ -20,22 +20,22 @@
             @csrf
             @method('PATCH')
             <label class="text-sm font-medium text-gray-400">Update Status:</label>
-            <select name="status" class="bg-[#0f1115] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
+            <select name="status" class="bg-[#15171A] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-red-500 transition-colors">
                 @foreach(['draft', 'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
                     <option value="{{ $status }}" {{ $submission->status === $status ? 'selected' : '' }}>
                         {{ ucwords(str_replace('_', ' ', $status)) }}
                     </option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-all text-sm">Update</button>
+            <button type="submit" class="bg-[#A3050A] hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all text-sm shadow-lg shadow-red-900/20">Update</button>
         </form>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Customer Info -->
-        <div class="bg-[#1a1d24]/80 border border-white/5 rounded-2xl p-6 shadow-xl">
+        <div class="bg-[#232528]/80 border border-white/5 rounded-2xl p-6 shadow-xl">
             <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 Customer Details
             </h4>
             <div class="space-y-4">
@@ -59,9 +59,9 @@
         </div>
 
         <!-- Shipping Address -->
-        <div class="bg-[#1a1d24]/80 border border-white/5 rounded-2xl p-6 shadow-xl md:col-span-2">
+        <div class="bg-[#232528]/80 border border-white/5 rounded-2xl p-6 shadow-xl md:col-span-2">
             <h4 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 Shipping Address
             </h4>
             @if($submission->shippingAddress)
@@ -92,7 +92,7 @@
     </div>
 
     <!-- Cards Itemized List -->
-    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="p-6 border-b border-white/5">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -118,7 +118,7 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @if($card->labelType)
-                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">
                                         {{ $card->labelType->name }}
                                     </span>
                                 @else

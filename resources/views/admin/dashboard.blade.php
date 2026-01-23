@@ -6,10 +6,10 @@
 <div class="space-y-8">
     <!-- Stat Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-[#1a1d24]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-blue-500/20"></div>
+        <div class="bg-[#232528]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-red-500/20"></div>
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500">
+                <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                 </div>
                 <div>
@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="bg-[#1a1d24]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+        <div class="bg-[#232528]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-amber-500/20"></div>
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-500">
@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div class="bg-[#1a1d24]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
+        <div class="bg-[#232528]/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-emerald-500/20"></div>
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500">
@@ -47,13 +47,13 @@
     </div>
 
     <!-- Recent Submissions Table -->
-    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Recent Activity
             </h3>
-            <a href="{{ route('admin.submissions.index') }}" class="text-sm text-blue-400 hover:text-blue-300 transition-colors font-medium">View All Submissions →</a>
+            <a href="{{ route('admin.submissions.index') }}" class="text-sm text-red-400 hover:text-red-300 transition-colors font-medium">View All Submissions →</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left">
@@ -83,7 +83,7 @@
                                         'draft' => 'bg-gray-500/20 text-gray-400',
                                         'pending_payment' => 'bg-amber-500/20 text-amber-400',
                                         'paid' => 'bg-emerald-500/20 text-emerald-400',
-                                        'processing' => 'bg-blue-500/20 text-blue-400',
+                                        'processing' => 'bg-red-500/20 text-red-400',
                                         'completed' => 'bg-purple-500/20 text-purple-400',
                                     ];
                                     $color = $colors[$submission->status] ?? 'bg-gray-500/20 text-gray-400';

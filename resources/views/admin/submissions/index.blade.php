@@ -4,10 +4,10 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 All Submissions
             </h3>
         </div>
@@ -38,7 +38,7 @@
                                 <div class="text-[10px] text-gray-500 uppercase">{{ $submission->submissionType?->name }}</div>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <span class="text-sm font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg">
+                                <span class="text-sm font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg">
                                     {{ $submission->total_cards }}
                                 </span>
                             </td>
@@ -48,10 +48,10 @@
                                         'draft' => 'bg-gray-500/20 text-gray-400',
                                         'pending_payment' => 'bg-amber-500/20 text-amber-400',
                                         'paid' => 'bg-emerald-500/20 text-emerald-400',
-                                        'processing' => 'bg-blue-500/20 text-blue-400',
-                                        'shipped' => 'bg-indigo-500/20 text-indigo-400',
-                                        'completed' => 'bg-purple-500/20 text-purple-400',
-                                        'cancelled' => 'bg-red-500/20 text-red-400',
+                                        'processing' => 'bg-red-500/20 text-red-400',
+                                        'shipped' => 'bg-red-700/20 text-red-500',
+                                        'completed' => 'bg-red-600/20 text-red-400',
+                                        'cancelled' => 'bg-red-900/20 text-red-700',
                                     ];
                                     $color = $colors[$submission->status] ?? 'bg-gray-500/20 text-gray-400';
                                 @endphp
@@ -64,7 +64,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{ route('admin.submissions.show', $submission) }}" class="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-all" title="View Details">
+                                    <a href="{{ route('admin.submissions.show', $submission) }}" class="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all" title="View Details">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                     </a>
                                     <form action="{{ route('admin.submissions.destroy', $submission) }}" method="POST" onsubmit="return confirm('Delete this submission permanently?')">

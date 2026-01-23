@@ -6,15 +6,15 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 11h.01M7 15h.01M13 7h.01M13 11h.01M13 15h.01M17 7h.01M17 11h.01M17 15h.01"></path></svg>
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 11h.01M7 15h.01M13 7h.01M13 11h.01M13 15h.01M17 7h.01M17 11h.01M17 15h.01"></path></svg>
             Label Types
         </h3>
-        <a href="{{ route('admin.label-types.create') }}" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] transition-all duration-300 text-sm">
+        <a href="{{ route('admin.label-types.create') }}" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-[#A3050A] text-white font-bold shadow-lg shadow-red-900/20 hover:scale-[1.02] transition-all duration-300 text-sm">
             Add New Label Type
         </a>
     </div>
 
-    <div class="bg-[#1a1d24]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-white/5 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
@@ -34,7 +34,7 @@
                             <td class="px-6 py-4 font-bold text-white">{{ $type->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-400 max-w-xs truncate">{{ $type->description }}</td>
                             <td class="px-6 py-4 text-center">
-                                <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-lg font-bold tabular-nums">
+                                <span class="bg-red-500/10 text-red-400 px-3 py-1 rounded-lg font-bold tabular-nums">
                                     {{ $type->display_price }}
                                 </span>
                             </td>
@@ -45,7 +45,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{ route('admin.label-types.edit', $type) }}" class="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-all">
+                                    <a href="{{ route('admin.label-types.edit', $type) }}" class="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     </a>
                                     <form action="{{ route('admin.label-types.destroy', $type) }}" method="POST" onsubmit="return confirm('Delete this label type?')">

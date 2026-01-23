@@ -34,6 +34,39 @@ class SubmissionController extends Controller
         return back()->with('success', 'Submission status updated successfully.');
     }
 
+    public function editCard(\App\Models\SubmissionCard $card)
+    {
+        $card->load('submission');
+        $statuses = [
+            'Submission Complete', 
+            'Cards Received', 
+            'In Grading', 
+            'Label Creation', 
+            'Slabbed', 
+            'Quality Control', 
+            'Completed', 
+            'Shipped', 
+            'Delivered'
+        ];
+        return view('admin.submissions.cards.edit', compact('card', 'statuses'));
+    }
+
+    public function updateCard(Request $request, \App\Models\SubmissionCard $card)
+    {
+        $request->validate([
+            'status' => 'required|string|max:255',
+            'admin_notes' => 'nullable|string',
+        ]);
+
+        $card->update([
+            'status' => $request->status,
+            'admin_notes' => $request->admin_notes,
+        ]);
+
+        return redirect()->route('admin.submissions.show', $card->submission_id)
+            ->with('success', 'Card details updated successfully.');
+    }
+
     public function destroy(Submission $submission)
     {
         $submission->delete();

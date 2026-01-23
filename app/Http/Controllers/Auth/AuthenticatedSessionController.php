@@ -29,6 +29,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         if ($request->session()->has('pending_submission_id')) {
+            $submissionId = $request->session()->get('pending_submission_id');
+            \App\Models\Submission::where('id', $submissionId)->update([
+                'user_id' => auth()->id(),
+                'temp_guest_id' => null
+            ]);
             return redirect()->route('submission.step4');
         }
 

@@ -105,8 +105,8 @@
                     <tr>
                         <th class="px-6 py-4">Card Info</th>
                         <th class="px-6 py-4 text-center">Label Type</th>
-                        <th class="px-6 py-4 text-center">Qty</th>
-                        <th class="px-6 py-4">Notes</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
@@ -125,8 +125,27 @@
                                     <span class="text-gray-600">-</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-center font-bold text-white">{{ $card->qty }}</td>
-                            <td class="px-6 py-4 text-xs text-gray-400 max-w-xs truncate">{{ $card->notes ?: '-' }}</td>
+                            <td class="px-6 py-4 text-center">
+                                @php
+                                    $statusColors = [
+                                        'Submission Complete' => 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+                                        'Cards Received' => 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+                                        'In Grading' => 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+                                        'Slabbed' => 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+                                        'Delivered' => 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+                                    ];
+                                    $colorClass = $statusColors[$card->status] ?? 'bg-white/5 text-gray-300 border-white/10';
+                                @endphp
+                                <span class="px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-tighter {{ $colorClass }}">
+                                    {{ $card->status ?? 'Submission Complete' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="{{ route('admin.submissions.cards.edit', $card) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all text-[11px] font-bold">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    Edit Details
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>

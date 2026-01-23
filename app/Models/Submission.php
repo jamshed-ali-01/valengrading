@@ -45,6 +45,21 @@ class Submission extends Model
         return $this->belongsTo(ShippingAddress::class);
     }
 
+    public function getTotalCostAttribute()
+    {
+        $total = 0;
+        if ($this->card_entry_mode === 'detailed') {
+            foreach ($this->cards as $card) {
+                $labelCost = $card->labelType?->price_adjustment ?? 0;
+                $total += ($this->serviceLevel->price_per_card + $labelCost) * ($card->qty ?? 1);
+            }
+        } else {
+            $labelCost = $this->labelType?->price_adjustment ?? 0;
+            $total = ($this->serviceLevel->price_per_card + $labelCost) * ($this->total_cards ?? 0);
+        }
+        return $total;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -16,6 +16,8 @@ class SubmissionCard extends Model
         'lang',
         'notes',
         'label_type_id',
+        'status',
+        'admin_notes',
     ];
 
     public function submission()

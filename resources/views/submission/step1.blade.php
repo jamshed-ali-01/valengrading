@@ -33,10 +33,10 @@
             </div>
         </div>
 
-        <div class="bg-[#232528]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl relative overflow-hidden group">
+        <div class="bg-[#232528]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-8 shadow-2xl relative overflow-hidden">
             <!-- Glassmorphism Background -->
-            <div class="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-red-500/15"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-red-900/10 rounded-full blur-3xl -z-10 transition-all duration-700 group-hover:bg-red-900/15"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -z-10 transition-all duration-700"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-red-900/10 rounded-full blur-3xl -z-10 transition-all duration-700"></div>
 
             <div class="mb-8 text-center">
                 <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-[#A3050A] mb-2">Start Your Submission</h2>
@@ -61,16 +61,25 @@
                     <label class="block mb-4 text-sm font-semibold text-gray-300 uppercase tracking-wider">Select Submission Type</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($types as $type)
-                            <div class="relative">
+                            <div class="relative submission-card-wrapper">
                                 <input type="radio" id="type_{{ $type->id }}" name="submission_type_id" value="{{ $type->id }}" class="peer hidden" 
                                     {{ (old('submission_type_id', session('submission_data.submission_type_id')) == $type->id) ? 'checked' : '' }} required>
-                                <label for="type_{{ $type->id }}" class="block text-left p-5 bg-[#15171A] border border-white/10 rounded-xl cursor-pointer peer-checked:border-red-500 peer-checked:bg-red-500/5 transition-all hover:bg-white/5 shadow-md group">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="font-bold text-lg text-white group-hover:text-red-400 transition-colors">{{ $type->title }}</span>
-                                        <div class="w-5 h-5 rounded-full border-2 border-gray-600 peer-checked:bg-red-500 peer-checked:border-red-500"></div>
+                                <label for="type_{{ $type->id }}" class="block text-left p-6 bg-[#15171A] border border-white/10 rounded-2xl cursor-pointer transition-all duration-300 
+                                    hover:border-red-500/50 hover:bg-white/[0.02] 
+                                    peer-checked:border-red-500 peer-checked:bg-red-500/5 peer-checked:shadow-[0_0_20px_rgba(163,5,10,0.1)]">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-xl text-white transition-colors uppercase tracking-tight title-text">{{ $type->title }}</span>
+                                        <div class="w-6 h-6 rounded-full border-2 border-white/10 flex items-center justify-center transition-all duration-300 radio-circle">
+                                            <div class="w-2.5 h-2.5 rounded-full bg-white opacity-0 transition-opacity duration-300 check-dot"></div>
+                                        </div>
                                     </div>
-                                    <p class="text-sm text-gray-400">{{ $type->description ?? 'Standard service option.' }}</p>
+                                    <p class="text-sm text-gray-400 leading-relaxed">{{ $type->description ?? 'Standard service option.' }}</p>
                                 </label>
+                                <style>
+                                    #type_{{ $type->id }}:checked + label .title-text { color: #ef4444; }
+                                    #type_{{ $type->id }}:checked + label .radio-circle { background-color: #A3050A; border-color: #A3050A; }
+                                    #type_{{ $type->id }}:checked + label .check-dot { opacity: 1; transform: scale(1); }
+                                </style>
                             </div>
                         @endforeach
                     </div>

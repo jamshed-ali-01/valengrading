@@ -285,24 +285,51 @@ class CardSubmissionController extends Controller
     
     public function processPayment(Request $request)
     {
-        
         $submissionId = session('pending_submission_id');
         if (! $submissionId) {
             return redirect()->route('submission.step1');
         }
 
-        $submission = Submission::with(['serviceLevel', 'labelType', 'cards.labelType'])->findOrFail($submissionId);
+        $submission = Submission::with(['serviceLevel', 'submissionType', 'labelType', 'cards.labelType'])->findOrFail($submissionId);
 
-        // Calculate Total Amount
+        // Map cards to Stripe line items
+        $lineItems = [];
         $totalCost = 0;
+
         if ($submission->card_entry_mode === 'detailed') {
             foreach ($submission->cards as $card) {
                 $labelCost = $card->labelType?->price_adjustment ?? 0;
-                $totalCost += ($submission->serviceLevel->price_per_card + $labelCost) * ($card->qty ?? 1);
+                $unitAmount = ($submission->serviceLevel->price_per_card + $labelCost);
+                $totalCost += $unitAmount * ($card->qty ?? 1);
+
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'product_data' => [
+                            'name' => $card->title,
+                            'description' => ($card->set_name ? $card->set_name . ' ' : '') . ($card->card_number ? '#' . $card->card_number : '') . " | Label: " . ($card->labelType->name ?? 'Standard'),
+                        ],
+                        'unit_amount' => round($unitAmount * 100),
+                    ],
+                    'quantity' => $card->qty ?? 1,
+                ];
             }
         } else {
             $labelCost = $submission->labelType?->price_adjustment ?? 0;
-            $totalCost = ($submission->serviceLevel->price_per_card + $labelCost) * $submission->total_cards;
+            $unitAmount = ($submission->serviceLevel->price_per_card + $labelCost);
+            $totalCost = $unitAmount * $submission->total_cards;
+
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => "Grading Submission: " . $submission->total_cards . " Cards",
+                        'description' => "Service: " . $submission->serviceLevel->name . " | Type: " . $submission->submissionType->name . " | Label: " . ($submission->labelType->name ?? 'Standard'),
+                    ],
+                    'unit_amount' => round($unitAmount * 100),
+                ],
+                'quantity' => $submission->total_cards,
+            ];
         }
 
         try {
@@ -310,22 +337,13 @@ class CardSubmissionController extends Controller
 
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'eur',
-                        'product_data' => [
-                            'name' => 'Submission #' . $submission->submission_no,
-                            'description' => $submission->card_entry_mode === 'detailed' ? count($submission->cards) . ' Cards' : $submission->total_cards . ' Cards (Easy)',
-                        ],
-                        'unit_amount' => round($totalCost * 100),
-                    ],
-                    'quantity' => 1,
-                ]],
+                'line_items' => $lineItems,
                 'mode' => 'payment',
                 'success_url' => route('submission.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('submission.cancel'),
                 'metadata' => [
                     'submission_id' => $submission->id,
+                    'submission_no' => $submission->submission_no,
                 ],
             ]);
 
@@ -344,8 +362,16 @@ class CardSubmissionController extends Controller
              return redirect()->route($route);
         }
 
-        $submission = Submission::findOrFail($submissionId);
+        $submission = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'shippingAddress'])->findOrFail($submissionId);
         $submission->update(['status' => 'paid']);
+
+        // Send Notification Email to Admin
+        try {
+            $adminEmail = \App\Models\SiteSetting::get('admin_notification_email', 'admin@valengrading.com');
+            \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\AdminNewOrderNotification($submission));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send admin notification: ' . $e->getMessage());
+        }
 
         session()->forget('pending_submission_id');
         session()->forget('submission_data');

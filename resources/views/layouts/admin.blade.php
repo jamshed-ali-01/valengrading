@@ -43,6 +43,13 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     <span class="font-medium">Services</span>
                 </a>
+
+                <div class="pt-6 pb-2 px-4 uppercase text-[10px] font-bold text-gray-500 tracking-wider">System</div>
+
+                <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('admin.settings.*') ? 'bg-gradient-to-r from-[#A3050A] to-red-700 text-white shadow-lg shadow-red-900/20' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="font-medium">Settings</span>
+                </a>
             </nav>
 
             <div class="p-4 border-t border-white/5">
@@ -61,10 +68,42 @@
             <!-- Top Header -->
             <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 sticky top-0 bg-[#15171A]/80 backdrop-blur-xl z-20">
                 <h2 class="text-lg font-semibold text-white">@yield('title', 'Admin Panel')</h2>
-                <div class="flex items-center gap-4">
-                    <span class="text-sm text-gray-400 font-medium">{{ auth()->user()->name }}</span>
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-[#A3050A] flex items-center justify-center text-xs font-bold shadow-lg shadow-red-900/20">
-                        {{ substr(auth()->user()->name, 0, 1) }}
+                <div class="flex items-center gap-6">
+                    <!-- Notifications -->
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" class="text-gray-400 hover:text-white transition-colors relative">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center text-white border-2 border-[#15171A]">0</span>
+                        </button>
+                        
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-3 w-80 bg-[#232528] border border-white/5 rounded-2xl shadow-2xl overflow-hidden py-2 z-50">
+                            <div class="px-4 py-3 border-b border-white/5 flex justify-between items-center">
+                                <span class="font-bold text-sm">Notifications</span>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest cursor-pointer hover:text-red-500">Mark all read</span>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto">
+                                <div class="px-4 py-8 text-center text-gray-500 italic text-sm">
+                                    No new notifications
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Link -->
+                    <a href="{{ route('admin.settings.index') }}" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    </a>
+
+                    <div class="h-6 w-px bg-white/5"></div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-bold text-white leading-none mb-1">{{ auth()->user()->name }}</p>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Administrator</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-[#A3050A] flex items-center justify-center text-sm font-bold shadow-lg shadow-red-900/20 border border-white/10 ring-2 ring-white/5">
+                            {{ substr(auth()->user()->name, 0, 1) }}
+                        </div>
                     </div>
                 </div>
             </header>

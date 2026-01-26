@@ -37,6 +37,7 @@ Route::prefix('admin')
         Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.update-status');
         
         // Card Management
+        Route::post('/submissions/{submission}/cards', [\App\Http\Controllers\Admin\SubmissionController::class, 'storeCard'])->name('submissions.cards.store');
         Route::get('/submissions/cards/{card}/edit', [\App\Http\Controllers\Admin\SubmissionController::class, 'editCard'])->name('submissions.cards.edit');
         Route::patch('/submissions/cards/{card}', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateCard'])->name('submissions.cards.update');
         

@@ -24,7 +24,7 @@ require __DIR__.'/auth.php';
 
 Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
     Route::get('/start', [CardSubmissionController::class, 'index'])->name('step1');
-    Route::post('/start', [CardSubmissionController::class, 'storeStep1'])->name('storeStep1');
+    Route::post('/start', [CardSubmissionController::class, 'storeStep1'])->name('storeStep 1');
 
     Route::get('/service-level', [CardSubmissionController::class, 'step2'])->name('step2');
     Route::post('/service-level', [CardSubmissionController::class, 'storeStep2'])->name('storeStep2');

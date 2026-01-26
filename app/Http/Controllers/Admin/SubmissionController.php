@@ -67,6 +67,42 @@ class SubmissionController extends Controller
             ->with('success', 'Card details updated successfully.');
     }
 
+    public function storeCard(Request $request, Submission $submission)
+    {
+        $request->validate([
+            'qty' => 'required|integer|min:1',
+            'title' => 'required|string|max:255',
+            'set_name' => 'nullable|string|max:255',
+            'year' => 'nullable|string|max:4',
+            'card_number' => 'nullable|string|max:50',
+            'lang' => 'nullable|string|max:50',
+            'label_type_id' => 'nullable|exists:label_types,id',
+        ]);
+
+        // Enforcement for Easy Mode limit
+        if ($submission->card_entry_mode === 'easy') {
+            $currentCount = $submission->cards()->sum('qty');
+            $remaining = $submission->total_cards - $currentCount;
+            
+            if ($request->qty > $remaining) {
+                return back()->withErrors(['qty' => "Cannot add {$request->qty} cards. Only {$remaining} cards remaining for this submission."])->withInput();
+            }
+        }
+
+        $submission->cards()->create([
+            'qty' => $request->qty,
+            'title' => $request->title,
+            'set_name' => $request->set_name,
+            'year' => $request->year,
+            'card_number' => $request->card_number,
+            'lang' => $request->lang,
+            'label_type_id' => $request->label_type_id ?? $submission->label_type_id, // Default to submission label type
+            'status' => 'Cards Received', // Default status for admin added cards
+        ]);
+
+        return back()->with('success', 'Card added successfully.');
+    }
+
     public function destroy(Submission $submission)
     {
         $submission->delete();

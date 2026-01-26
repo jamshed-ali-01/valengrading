@@ -91,6 +91,89 @@
         </div>
     </div>
 
+    
+    @if($submission->card_entry_mode === 'easy')
+        @php
+            $currentCount = $submission->cards->sum('qty');
+            $totalCards = $submission->total_cards;
+            $remaining = $totalCards - $currentCount;
+            $progressPercent = $totalCards > 0 ? ($currentCount / $totalCards) * 100 : 0;
+        @endphp
+
+        <!-- Admin Card Entry (Easy Mode) -->
+        <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        Easy Mode Entry
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-1">Manually enter received cards for this submission.</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold {{ $remaining == 0 ? 'text-emerald-500' : 'text-white' }}">{{ $currentCount }} <span class="text-sm text-gray-500 font-normal">/ {{ $totalCards }}</span></div>
+                    <div class="text-xs text-gray-500 uppercase tracking-widest">Cards Entered</div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-white/5 rounded-full h-2 mb-8 overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: {{ $progressPercent }}%"></div>
+            </div>
+
+            @if($remaining > 0)
+            <form action="{{ route('admin.submissions.cards.store', $submission) }}" method="POST" class="bg-white/5 rounded-xl p-6 border border-white/5">
+                @csrf
+                <h4 class="text-sm font-bold text-gray-300 uppercase tracking-widest mb-4">Add New Card</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <!-- Hidden Qty forces 1 per entry -->
+                    <input type="hidden" name="qty" value="1">
+                    
+                    <!-- Year -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-gray-500 uppercase font-bold mb-1">Year</label>
+                        <input type="text" name="year" placeholder="2024" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                    </div>
+
+                    <!-- Set Name -->
+                    <div class="md:col-span-3">
+                        <label class="block text-xs text-gray-500 uppercase font-bold mb-1">Set Name</label>
+                        <input type="text" name="set_name" placeholder="Pokemon TCG" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                    </div>
+
+                    <!-- Card Name/Title -->
+                    <div class="md:col-span-5">
+                        <label class="block text-xs text-gray-500 uppercase font-bold mb-1">Card Name / Title</label>
+                        <input type="text" name="title" required placeholder="Charizard VMAX" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                    </div>
+                    
+                    <!-- Card Number -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-gray-500 uppercase font-bold mb-1">Card #</label>
+                        <input type="text" name="card_number" placeholder="001/100" class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex justify-end">
+                     <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg text-sm transition-all shadow-lg shadow-emerald-900/20 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        Add Card
+                    </button>
+                </div>
+            </form>
+            @else
+            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3 text-emerald-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <p class="font-bold">All cards entered</p>
+                    <p class="text-xs text-emerald-400/70">This submission has reached the paid card limit.</p>
+                </div>
+            </div>
+            @endif
+        </div>
+    @endif
+
     <!-- Cards Itemized List -->
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="p-6 border-b border-white/5">

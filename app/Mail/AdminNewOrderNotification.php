@@ -39,7 +39,7 @@ class AdminNewOrderNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.admin_order_notification',
+            view: 'emails.admin_order_notification',
         );
     }
 

@@ -160,7 +160,52 @@
 
     @vite('resources/js/app.js')
     
+    <style>
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            top: 50%;
+            left: 50%;
+            margin-top: -0.625rem;
+            margin-left: -0.625rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
     <script type="module">
+        // Global Loading Handler
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn && !submitBtn.classList.contains('no-loader')) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.disabled = true;
+            }
+        });
+
+        document.querySelectorAll('a.btn-load, button.btn-load').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.tagName === 'A' && !this.href.includes('#')) {
+                    this.classList.add('btn-loading');
+                }
+            });
+        });
+
         // Request Browser Notification Permission
         if ("Notification" in window) {
             if (Notification.permission !== "granted" && Notification.permission !== "denied") {

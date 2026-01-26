@@ -12,7 +12,7 @@ class SubmissionController extends Controller
     {
         $submissions = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'labelType'])
             ->latest()
-            ->paginate(20);
+            ->paginate(10);
 
         return view('admin.submissions.index', compact('submissions'));
     }

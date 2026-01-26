@@ -231,7 +231,6 @@
                             </td>
                         </tr>
                     @empty
-                    @empty
                         <tr>
                             <td colspan="4" class="px-6 py-16 text-center">
                                 @if($submission->card_entry_mode === 'easy')
@@ -249,7 +248,6 @@
                                 @endif
                             </td>
                         </tr>
-                    @endforelse
                     @endforelse
                 </tbody>
             </table>

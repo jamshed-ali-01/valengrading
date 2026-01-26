@@ -231,15 +231,25 @@
                             </td>
                         </tr>
                     @empty
+                    @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">
+                            <td colspan="4" class="px-6 py-16 text-center">
                                 @if($submission->card_entry_mode === 'easy')
-                                    This was an "Easy Mode" submission with {{ $submission->total_cards }} cards. Itemization details were not provided.
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-white font-bold text-lg">Easy Mode Submission</p>
+                                            <p class="text-sm text-gray-500 max-w-xs mx-auto">This submission contains <strong>{{ $submission->total_cards }}</strong> cards, but itemized details were not provided by the user.</p>
+                                        </div>
+                                    </div>
                                 @else
-                                    No cards found.
+                                    <p class="text-gray-500 italic">No cards found documented for this submission.</p>
                                 @endif
                             </td>
                         </tr>
+                    @endforelse
                     @endforelse
                 </tbody>
             </table>

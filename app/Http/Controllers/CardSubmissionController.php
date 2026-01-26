@@ -111,8 +111,8 @@ class CardSubmissionController extends Controller
         }
 
         // Custom validation for easy mode
-        if ($validated['card_entry_mode'] === 'easy' && empty($validated['label_type_id'])) {
-            return back()->withErrors(['label_type_id' => 'Please select a label type for easy mode.'])->withInput();
+        if ($validated['card_entry_mode'] === 'easy' && empty($validated['total_cards'])) {
+            return back()->withErrors(['total_cards' => 'Please enter total card count for easy mode.'])->withInput();
         }
 
         // Custom validation for detailed mode
@@ -146,10 +146,23 @@ class CardSubmissionController extends Controller
 
             if ($submissionId) {
                 $submission = Submission::find($submissionId);
+                
+                // Force new 6-digit ID if it's an old-style one (e.g., contains 'SUB-')
+                if (str_contains($submission->submission_no, '-')) {
+                    do {
+                        $newNo = (string) rand(100000, 999999);
+                    } while (Submission::where('submission_no', $newNo)->exists());
+                    $submissionData['submission_no'] = $newNo;
+                }
+                
                 $submission->update($submissionData);
                 $submission->cards()->delete();
             } else {
-                $submissionData['submission_no'] = 'SUB-' . strtoupper(Str::random(8));
+                do {
+                    $newNo = (string) rand(100000, 999999);
+                } while (Submission::where('submission_no', $newNo)->exists());
+                
+                $submissionData['submission_no'] = $newNo;
                 $submission = Submission::create($submissionData);
                 session(['pending_submission_id' => $submission->id]);
             }
@@ -365,19 +378,38 @@ class CardSubmissionController extends Controller
         $submission = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'shippingAddress'])->findOrFail($submissionId);
         $submission->update(['status' => 'paid']);
 
-        // Send Notification Email to Admin
+        // Send Notification Email and Database Notification to Admin
         try {
             $adminEmail = \App\Models\SiteSetting::get('admin_notification_email', 'admin@valengrading.com');
             \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\AdminNewOrderNotification($submission));
+            
+            // Send Database Notification to all admins
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewSubmissionNotification($submission));
+            
+            // Broadcast real-time notification
+            event(new \App\Events\NewSubmissionEvent($submission));
         } catch (\Exception $e) {
             \Log::error('Failed to send admin notification: ' . $e->getMessage());
         }
 
-        session()->forget('pending_submission_id');
+        // Keep ID in session for success page refresh but forget after use OR just pass in request
+        // session()->forget('pending_submission_id');
         session()->forget('submission_data');
 
-        $route = (auth()->check() && auth()->user()->role === 'admin') ? 'admin.dashboard' : 'user.dashboard';
-        return redirect()->route($route)->with('status', 'Payment successful! Your submission has been received.');
+        return view('submission.success', compact('submission'));
+    }
+
+    public function downloadPackingSlip($id)
+    {
+        $submission = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'shippingAddress'])->findOrFail($id);
+        
+        // Basic security check: user must own it or be admin
+        if (auth()->id() !== $submission->user_id && auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        return view('submission.packing_slip', compact('submission'));
     }
 
     public function paymentCancel()

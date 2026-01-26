@@ -10,7 +10,7 @@ class SubmissionController extends Controller
 {
     public function index()
     {
-        $submissions = Submission::with(['user', 'serviceLevel', 'submissionType'])
+        $submissions = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'labelType'])
             ->latest()
             ->paginate(20);
 

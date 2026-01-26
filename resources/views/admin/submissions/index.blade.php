@@ -19,6 +19,7 @@
                         <th class="px-6 py-4">Submission #</th>
                         <th class="px-6 py-4">Customer</th>
                         <th class="px-6 py-4">Service & Type</th>
+                        <th class="px-6 py-4 text-center">Price</th>
                         <th class="px-6 py-4 text-center">Cards</th>
                         <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4">Date</th>
@@ -36,6 +37,9 @@
                             <td class="px-6 py-4">
                                 <div class="text-sm text-gray-300 font-medium">{{ $submission->serviceLevel->name }}</div>
                                 <div class="text-[10px] text-gray-500 uppercase">{{ $submission->submissionType?->name }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-sm font-bold text-emerald-400">€{{ number_format($submission->total_cost, 2) }}</span>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <span class="text-sm font-bold text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg">

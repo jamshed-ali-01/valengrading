@@ -22,10 +22,9 @@ class DashboardController extends Controller
             'draft_submissions' => Submission::where('status', 'draft')->count(),
             'pending_payments' => Submission::where('status', 'pending_payment')->count(),
             'paid_submissions' => Submission::where('status', 'paid')->orWhere('status', 'processing')->orWhere('status', 'completed')->count(),
-            'recent_submissions' => Submission::with(['user', 'serviceLevel'])
+            'recent_submissions' => Submission::with(['user', 'serviceLevel', 'cards', 'labelType'])
                 ->latest()
-                ->limit(10)
-                ->get(),
+                ->paginate(10, ['*'], 'recent_page'),
             'total_cards' => Submission::whereIn('status', ['paid', 'processing', 'completed'])
                 ->sum('total_cards'),
         ];
@@ -77,5 +76,11 @@ class DashboardController extends Controller
         $stats['revenue_graph_data'] = $graphData;
 
         return view('admin.dashboard', compact('stats'));
+    }
+
+    public function markAllRead()
+    {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'All notifications marked as read.');
     }
 }

@@ -56,18 +56,32 @@
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="text-gray-400 hover:text-white transition-colors relative">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center text-white border-2 border-[#15171A]">0</span>
+                            <span id="notification-count" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center text-white border-2 border-[#15171A] {{ auth()->user()->unreadNotifications->count() > 0 ? '' : 'hidden' }}">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
                         </button>
                         
                         <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-3 w-80 bg-[#232528] border border-white/5 rounded-2xl shadow-2xl overflow-hidden py-2 z-50">
                             <div class="px-4 py-3 border-b border-white/5 flex justify-between items-center">
                                 <span class="font-bold text-sm">Notifications</span>
-                                <span class="text-[10px] text-gray-500 uppercase tracking-widest cursor-pointer hover:text-red-500">Mark all read</span>
+                                @if(auth()->user()->unreadNotifications->count() > 0)
+                                    <form action="{{ route('admin.notifications.mark-all-read') }}" method="POST" id="mark-all-read-form">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] text-gray-500 uppercase tracking-widest cursor-pointer hover:text-red-500">Mark all read</button>
+                                    </form>
+                                @endif
                             </div>
-                            <div class="max-h-64 overflow-y-auto">
-                                <div class="px-4 py-8 text-center text-gray-500 italic text-sm">
-                                    No new notifications
-                                </div>
+                            <div id="notification-list" class="max-h-64 overflow-y-auto">
+                                @forelse(auth()->user()->unreadNotifications as $notification)
+                                    <a href="{{ route('admin.submissions.show', $notification->data['submission_id'] ?? '') }}" class="block px-4 py-3 hover:bg-white/5 border-b border-white/5 transition-colors">
+                                        <p class="text-xs text-white font-medium mb-1">{{ $notification->data['message'] ?? 'New Notification' }}</p>
+                                        <p class="text-[10px] text-gray-500">{{ $notification->created_at->diffForHumans() }}</p>
+                                    </a>
+                                @empty
+                                    <div id="no-notifications-msg" class="px-4 py-8 text-center text-gray-500 italic text-sm">
+                                        No new notifications
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -127,6 +141,95 @@
             <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] -z-10"></div>
             <div class="fixed bottom-0 left-64 w-[500px] h-[500px] bg-red-900/5 rounded-full blur-[120px] -z-10"></div>
         </main>
+    </div>    <!-- Real-time Notification Toast -->
+    <div id="notification-toast" class="fixed top-24 right-8 bg-[#232528] border border-l-4 border-emerald-500 text-white px-6 py-4 rounded-lg shadow-2xl z-50 transform transition-all duration-300 translate-x-full opacity-0 flex items-center gap-4">
+        <div class="bg-emerald-500/20 p-2 rounded-full text-emerald-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm" id="toast-title">New Submission!</h4>
+            <p class="text-xs text-gray-400" id="toast-message">New submission received.</p>
+        </div>
+        <button onclick="document.getElementById('notification-toast').classList.add('translate-x-full', 'opacity-0')" class="text-gray-400 hover:text-white ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
     </div>
+
+    <!-- Notification Sound -->
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    @vite('resources/js/app.js')
+    
+    <script type="module">
+        // Request Browser Notification Permission
+        if ("Notification" in window) {
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+
+        // Wait for Echo to be initialized
+        setTimeout(() => {
+            if (window.Echo) {
+                window.Echo.channel('admin-notifications')
+                    .listen('NewSubmissionEvent', (e) => {
+                        console.log('New Submission Event:', e);
+                        
+                        // 1. Play sound
+                        try {
+                            const audio = document.getElementById('notification-sound');
+                            audio.currentTime = 0;
+                            audio.play().catch(err => console.log('Audio play failed:', err));
+                        } catch (err) {
+                            console.log('Audio error', err);
+                        }
+
+                        // 2. Trigger Browser Push Notification
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification('New Order: ' + e.submission_no, {
+                                body: e.user_name + ' submitted ' + e.amount + ' cards',
+                                icon: '/favicon.ico' // Ensure you have a favicon or use a generic icon URL
+                            });
+                        }
+
+                        // 3. Update Badge Count
+                        const badge = document.getElementById('notification-count');
+                        if (badge) {
+                            let count = parseInt(badge.innerText) || 0;
+                            badge.innerText = count + 1;
+                            badge.classList.remove('hidden');
+                        }
+
+                        // 4. Update Notification List
+                        const list = document.getElementById('notification-list');
+                        const emptyMsg = document.getElementById('no-notifications-msg');
+                        if (list) {
+                            if (emptyMsg) emptyMsg.remove();
+                            
+                            const newNotification = `
+                                <a href="/admin/submissions/${e.id}" class="block px-4 py-3 hover:bg-white/5 border-b border-white/5 transition-colors animate-pulse">
+                                    <p class="text-xs text-white font-medium mb-1">${e.message}</p>
+                                    <p class="text-[10px] text-gray-500">Just now</p>
+                                </a>
+                            `;
+                            list.insertAdjacentHTML('afterbegin', newNotification);
+                        }
+
+                        // 5. Update Toast
+                        document.getElementById('toast-title').innerText = 'New Order: ' + e.submission_no;
+                        document.getElementById('toast-message').innerText = e.user_name + ' submitted ' + e.amount + ' cards';
+                        
+                        const toast = document.getElementById('notification-toast');
+                        toast.classList.remove('translate-x-full', 'opacity-0');
+                        
+                        setTimeout(() => {
+                            toast.classList.add('translate-x-full', 'opacity-0');
+                        }, 8000);
+                    });
+            } else {
+                console.error('Echo not initialized');
+            }
+        }, 1000);
+    </script>
 </body>
 </html>

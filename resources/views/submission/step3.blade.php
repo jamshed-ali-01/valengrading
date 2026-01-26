@@ -74,17 +74,6 @@
                                 placeholder="0">
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Label Type</label>
-                            <select name="label_type_id" id="easy_mode_label_type" class="w-full bg-[#15171A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 appearance-none cursor-pointer">
-                                <option value="">Select Label Type</option>
-                                @foreach($labelTypes as $type)
-                                    <option value="{{ $type->id }}" {{ (old('label_type_id', $submission->label_type_id ?? '') == $type->id) ? 'selected' : '' }}>
-                                        {{ $type->name }} ({{ $type->display_price }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
                     </div>
                 </div>
 
@@ -162,7 +151,6 @@
     const detailedModeBtn = document.getElementById('detailedModeBtn');
     const easyModeDiv = document.getElementById('easyMode');
     const detailedModeDiv = document.getElementById('detailedMode');
-    const easyLabelType = document.getElementById('easy_mode_label_type');
     const totalCardsInput = document.getElementById('total_cards');
     const cardsContainer = document.getElementById('cardsContainer');
     const emptyState = document.getElementById('detailed-empty-state');
@@ -183,7 +171,6 @@
             detailedModeDiv.classList.add('hidden');
             
             totalCardsInput.setAttribute('required', 'true');
-            easyLabelType.setAttribute('required', 'true');
             
             // Remove required from detailed inputs
             document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => el.removeAttribute('required'));
@@ -198,7 +185,6 @@
             easyModeDiv.classList.add('hidden');
             
             totalCardsInput.removeAttribute('required');
-            easyLabelType.removeAttribute('required');
             
             if (cardsContainer.children.length === 0) {
                 // Optional: Auto add one row
@@ -283,7 +269,6 @@
         
         if (modeInput.value === 'easy') {
             const count = parseInt(totalCardsInput.value) || 0;
-            const label = easyLabelType.value;
             
             if (minCards > 0 && count < minCards) {
                 isValid = false;
@@ -292,7 +277,6 @@
                  // Silent fail or required prompt
             }
             
-            if (!label) isValid = false; // Browser handles required but good to check
             
         } else {
             const rows = cardsContainer.children.length;
@@ -327,7 +311,6 @@
 
     // Init
     totalCardsInput.addEventListener('input', validate);
-    easyLabelType.addEventListener('change', validate);
     
     // Check initial state
     setMode(window.initialMode);

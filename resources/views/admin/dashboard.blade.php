@@ -331,7 +331,8 @@
                         <th class="px-6 py-4">Submission #</th>
                         <th class="px-6 py-4">Customer</th>
                         <th class="px-6 py-4">Service</th>
-                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4 text-center">Price</th>
+                        <th class="px-6 py-4 text-center">Status</th>
                         <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -346,7 +347,10 @@
                             <td class="px-6 py-4">
                                 <span class="text-sm font-medium text-gray-300">{{ $submission->serviceLevel->name }}</span>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-sm font-bold text-emerald-400">€{{ number_format($submission->total_cost, 2) }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 @php
                                     $colors = [
                                         'draft' => 'bg-gray-500/20 text-gray-400',
@@ -369,12 +373,17 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic">No submissions found yet.</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500 italic">No submissions found yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        @if($stats['recent_submissions']->hasPages())
+            <div class="px-6 py-4 border-t border-white/5 font-medium">
+                {{ $stats['recent_submissions']->appends(['recent_page' => request('recent_page')])->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

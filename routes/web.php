@@ -14,6 +14,18 @@ Route::get('/admin/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('admin.dashboard');
 
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('population', \App\Http\Controllers\Admin\PopulationReportController::class);
+    // Add existing submission controller resource if not already there, but for now just population is new
+    Route::get('/submissions', [\App\Http\Controllers\Admin\SubmissionController::class, 'index'])->name('submissions.index');
+     Route::get('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'show'])->name('submissions.show');
+      Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.updateStatus');
+       Route::delete('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'destroy'])->name('submissions.destroy');
+    Route::get('/submissions/cards/{card}/edit', [\App\Http\Controllers\Admin\SubmissionController::class, 'editCard'])->name('submissions.cards.edit');
+     Route::patch('/submissions/cards/{card}', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateCard'])->name('submissions.cards.update');
+      Route::post('/submissions/{submission}/cards', [\App\Http\Controllers\Admin\SubmissionController::class, 'storeCard'])->name('submissions.cards.store');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -52,3 +64,4 @@ Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
 Route::get('/cert-check', [\App\Http\Controllers\CardReportController::class, 'index'])->name('cert.index');
 Route::post('/cert-check/search', [\App\Http\Controllers\CardReportController::class, 'search'])->name('cert.search');
 Route::get('/card/{cert_number}', [\App\Http\Controllers\CardReportController::class, 'show'])->name('card.report');
+Route::get('/population-report', [\App\Http\Controllers\PopulationReportController::class, 'index'])->name('pop-report.index');

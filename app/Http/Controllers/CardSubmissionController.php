@@ -389,6 +389,12 @@ class CardSubmissionController extends Controller
             
             // Broadcast real-time notification
             event(new \App\Events\NewSubmissionEvent($submission));
+
+            // Send User Confirmation Email
+            $userEmail = $submission->user->email ?? $submission->shippingAddress->email;
+            if ($userEmail) {
+                \Illuminate\Support\Facades\Mail::to($userEmail)->send(new \App\Mail\UserSubmissionConfirmation($submission));
+            }
         } catch (\Exception $e) {
             \Log::error('Failed to send admin notification: ' . $e->getMessage());
         }

@@ -77,7 +77,7 @@
                     </a>
                 </div>
 
-                <iframe id="slip-iframe" class="hidden"></iframe>
+                <iframe id="slip-iframe" class="opacity-0 pointer-events-none absolute w-0 h-0 border-0" style="left: -9999px;"></iframe>
 
                 <script>
                     function downloadSlip() {

@@ -460,6 +460,11 @@ class CardSubmissionController extends Controller
             abort(403);
         }
 
+        // Prevent download for draft submissions
+        if ($submission->status === 'draft') {
+            abort(403, 'Packing slips cannot be generated for draft submissions.');
+        }
+
         return view('submission.packing_slip', compact('submission'));
     }
 

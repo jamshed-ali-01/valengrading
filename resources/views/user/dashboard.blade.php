@@ -89,6 +89,13 @@
                                 }">
                                 {{ str_replace('_', ' ', $submission->status) }}
                             </div>
+                            
+                            @if($submission->status !== 'draft')
+                                <a href="{{ route('submission.packingSlip.download', $submission->id) }}" class="p-3 rounded-2xl bg-white/5 border border-white/10 text-gray-400 hover:text-red-500 hover:bg-white/10 transition-all group/btn" title="Download Packing Slip" @click.stop>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 012-2H5a2 2 0 01-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                </a>
+                            @endif
+
                             <svg class="w-6 h-6 text-gray-600 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
                     </div>

@@ -44,6 +44,8 @@ Route::prefix('admin')
         // Settings
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
         Route::patch('/settings/general', [\App\Http\Controllers\Admin\SettingsController::class, 'updateGeneral'])->name('settings.update-general');
+        Route::patch('/settings/smtp', [\App\Http\Controllers\Admin\SettingsController::class, 'updateSMTP'])->name('settings.update-smtp');
+        Route::patch('/settings/shipping', [\App\Http\Controllers\Admin\SettingsController::class, 'updateShipping'])->name('settings.update-shipping');
         Route::patch('/settings/profile', [\App\Http\Controllers\Admin\SettingsController::class, 'updateProfile'])->name('settings.update-profile');
         Route::patch('/settings/password', [\App\Http\Controllers\Admin\SettingsController::class, 'updatePassword'])->name('settings.update-password');
         

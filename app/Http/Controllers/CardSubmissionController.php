@@ -327,23 +327,23 @@ class CardSubmissionController extends Controller
                     'quantity' => $card->qty ?? 1,
                 ];
             }
-        } else {
-            $labelCost = $submission->labelType?->price_adjustment ?? 0;
-            $unitAmount = ($submission->serviceLevel->price_per_card + $labelCost);
-            $totalCost = $unitAmount * $submission->total_cards;
-
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'product_data' => [
-                        'name' => "Grading Submission: " . $submission->total_cards . " Cards",
-                        'description' => "Service: " . $submission->serviceLevel->name . " | Type: " . $submission->submissionType->name . " | Label: " . ($submission->labelType->name ?? 'Standard'),
-                    ],
-                    'unit_amount' => round($unitAmount * 100),
-                ],
-                'quantity' => $submission->total_cards,
-            ];
         }
+
+        // Add Flat Rate Shipping
+        $shippingRate = 7.99;
+        $submission->update(['shipping_amount' => $shippingRate]);
+
+        $lineItems[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'product_data' => [
+                    'name' => 'Flat Rate Shipping',
+                    'description' => 'Secure shipping for your collection',
+                ],
+                'unit_amount' => round($shippingRate * 100),
+            ],
+            'quantity' => 1,
+        ];
 
         try {
              \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
@@ -377,6 +377,36 @@ class CardSubmissionController extends Controller
 
         $submission = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'shippingAddress'])->findOrFail($submissionId);
         $submission->update(['status' => 'paid']);
+
+        // Generate Certification Numbers and QR Tokens for each card
+        if ($submission->card_entry_mode === 'easy') {
+            // In easy mode, we create the skeleton records if they don't exist
+            // (Wait, easy mode cards might not exist in submission_cards if it's bulk)
+            // If they don't exist, we create them based on total_cards
+            if ($submission->cards->count() === 0) {
+                for ($i = 0; $i < $submission->total_cards; $i++) {
+                    $submission->cards()->create([
+                        'title' => 'Card #' . ($i + 1),
+                        'qty' => 1,
+                        'status' => 'Submission Complete',
+                    ]);
+                }
+                $submission->load('cards');
+            }
+        }
+
+        foreach ($submission->cards as $card) {
+            if (!$card->cert_number) {
+                do {
+                    $cert = rand(100000, 999999);
+                } while (\App\Models\SubmissionCard::where('cert_number', $cert)->exists());
+                
+                $card->update([
+                    'cert_number' => $cert,
+                    'qr_code_token' => Str::random(32),
+                ]);
+            }
+        }
 
         // Send Notification Email and Database Notification to Admin
         try {

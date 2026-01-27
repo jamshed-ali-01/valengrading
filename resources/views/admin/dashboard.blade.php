@@ -328,10 +328,10 @@
             <table class="w-full text-left">
                 <thead class="bg-white/5 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
                     <tr>
-                        <th class="px-6 py-4">Submission #</th>
+                        <th class="px-6 py-4">Submission</th>
                         <th class="px-6 py-4">Customer</th>
                         <th class="px-6 py-4">Service</th>
-                        <th class="px-6 py-4 text-center">Price</th>
+                        <th class="px-6 py-4 text-center">Summary</th>
                         <th class="px-6 py-4 text-center">Status</th>
                         <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
@@ -339,16 +339,20 @@
                 <tbody class="divide-y divide-white/5">
                     @forelse($stats['recent_submissions'] as $submission)
                         <tr class="hover:bg-white/[0.02] transition-colors group">
-                            <td class="px-6 py-4 font-medium text-white">{{ $submission->submission_no }}</td>
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-white tracking-wide">#{{ $submission->submission_no }}</div>
+                                <div class="text-[10px] text-gray-500 uppercase font-medium mt-0.5">{{ $submission->created_at->format('M d, Y') }}</div>
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="text-white font-medium">{{ $submission->guest_name ?? $submission->user->name }}</div>
-                                <div class="text-xs text-gray-500">{{ $submission->user->email ?? 'Guest' }}</div>
+                                <div class="text-xs text-gray-500 text-truncate max-w-[150px]">{{ $submission->user->email ?? 'Guest' }}</div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="text-sm font-medium text-gray-300">{{ $submission->serviceLevel->name }}</span>
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <span class="text-sm font-bold text-emerald-400">€{{ number_format($submission->total_cost, 2) }}</span>
+                                <div class="text-sm font-bold text-emerald-400">€{{ number_format($submission->total_cost, 2) }}</div>
+                                <div class="text-[10px] text-gray-500 font-bold uppercase mt-0.5">{{ $submission->total_cards }} Cards</div>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @php
@@ -366,9 +370,14 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.submissions.show', $submission) }}" class="btn-load p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all inline-block">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                </a>
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('submission.packingSlip.download', $submission) }}" class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all inline-block" title="Download Packing Slip">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 012-2H5a2 2 0 01-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    </a>
+                                    <a href="{{ route('admin.submissions.show', $submission) }}" class="btn-load p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all inline-block">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

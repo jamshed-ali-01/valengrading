@@ -18,6 +18,18 @@ class SubmissionCard extends Model
         'label_type_id',
         'status',
         'admin_notes',
+        'cert_number',
+        'grade',
+        'centering',
+        'corners',
+        'edges',
+        'surface',
+        'grading_insights',
+        'grading_image',
+        'back_image',
+        'qr_code_token',
+        'is_revealed',
+        'grading_report_path',
     ];
 
     public function submission()

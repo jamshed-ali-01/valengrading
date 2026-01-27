@@ -18,6 +18,7 @@ class Submission extends Model
         'status',
         'card_entry_mode',
         'total_cards',
+        'shipping_amount',
     ];
 
     public function serviceLevel()
@@ -57,7 +58,7 @@ class Submission extends Model
             $labelCost = $this->labelType?->price_adjustment ?? 0;
             $total = ($this->serviceLevel->price_per_card + $labelCost) * ($this->total_cards ?? 0);
         }
-        return $total;
+        return $total + ($this->shipping_amount ?? 0);
     }
 
     public function user()

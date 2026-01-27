@@ -11,6 +11,7 @@
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.10.1",
         "pusher/pusher-php-server": "*",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "stripe/stripe-php": "^19.2"
     },
     "require-dev": {

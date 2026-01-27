@@ -47,3 +47,8 @@ Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
     Route::get('/payment/cancel', [CardSubmissionController::class, 'paymentCancel'])->name('cancel');
     Route::get('/packing-slip/{id}', [CardSubmissionController::class, 'downloadPackingSlip'])->name('packingSlip.download');
 });
+
+// Public Card Validation/Report
+Route::get('/cert-check', [\App\Http\Controllers\CardReportController::class, 'index'])->name('cert.index');
+Route::post('/cert-check/search', [\App\Http\Controllers\CardReportController::class, 'search'])->name('cert.search');
+Route::get('/card/{cert_number}', [\App\Http\Controllers\CardReportController::class, 'show'])->name('card.report');

@@ -114,31 +114,30 @@
 
         <div class="instructions">
             <div style="text-align: center; margin-bottom: 15px;">
-                <strong style="font-size: 15px; text-transform: uppercase;">Submission Instructions</strong>
+                <strong style="font-size: 15px; text-transform: uppercase; color: #A3050A;">Submission Instructions</strong>
             </div>
-            <p>Please enclose this packing slip inside your securely packaged submission.</p>
-            <p>if you do not have access to printer; handwrite following details on a sheet of paper:</p>
-            <p style="margin-left: 10px;">• Full Name</p>
-            <p style="margin-left: 10px;">• Submission Number</p>
-            <p style="margin-left: 10px;">• Number of Cards Submitted</p>
-            <p style="padding: 15px 0px"><strong>clearly mark your Submission Number on the outside of the parcel.</strong></p>
-            <p>please visit your local Post Office or book a collection with your preferred courier to send Your cards to us</p>
+            <p>1. Please enclose this packing slip inside your securely packaged submission.</p>
+            <p>2. If you do not have access to a printer, handwrite your <strong>Full Name</strong>, <strong>Submission Number</strong>, and <strong>Card Count</strong> on a sheet of paper and include it.</p>
+            <p>3. <strong>Clearly mark your Submission Number on the outside of the parcel.</strong></p>
+            <p>4. Use a tracked shipping service to ensure your items arrive safely.</p>
         </div>
 
         <div class="cols">
             <div class="col">
-                <p class="col-title">Send To</p>
-                <p>Valen Grading</p>
-                <p>123 Business Street</p>
-                <p>London, EC1A 1BB</p>
-                <p>United Kingdom</p>
+                <p class="col-title" style="color: #A3050A;">Send Your Parcel To:</p>
+                <p><strong>{{ \App\Models\SiteSetting::get('shipping_name', 'Valen Grading') }}</strong></p>
+                <p style="white-space: pre-line;">{{ \App\Models\SiteSetting::get('shipping_address', "123 Business Street\nLondon, EC1A 1BB\nUnited Kingdom") }}</p>
+                @if($phone = \App\Models\SiteSetting::get('shipping_phone'))
+                    <p style="margin-top: 10px;">Phone: {{ $phone }}</p>
+                @endif
             </div>
             <div class="col">
-                <p class="col-title">Your Return Address</p>
-                <p>{{ $submission->shippingAddress->full_name ?? $submission->guest_name }}</p>
+                <p class="col-title" style="color: #A3050A;">Your Return Address:</p>
+                <p><strong>{{ $submission->shippingAddress->full_name ?? $submission->guest_name }}</strong></p>
                 <p>{{ $submission->shippingAddress->address_line_1 ?? '-' }}</p>
-                <p>{{ $submission->shippingAddress->city ?? '-' }}</p>
-                <p>{{ $submission->shippingAddress->post_code ?? '' }}</p>
+                <p>{{ $submission->shippingAddress->city ?? '-' }}, {{ $submission->shippingAddress->post_code ?? '' }}</p>
+                <p>{{ $submission->shippingAddress->country ?? '-' }}</p>
+                <p>Email: {{ $submission->shippingAddress->email ?? $submission->user->email }}</p>
             </div>
         </div>
     </div>

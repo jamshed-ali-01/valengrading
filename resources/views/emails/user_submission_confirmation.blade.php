@@ -50,11 +50,15 @@
             </div>
 
             <h3>Next Steps:</h3>
-            <ol style="font-size: 14px; color: #4b5563;">
-                <li>Print your packing slip from the website (if you haven't already).</li>
+            <ol style="font-size: 14px; color: #4b5563; margin-bottom: 25px;">
+                <li>Print your packing slip using the button below.</li>
                 <li>Securely package your cards.</li>
                 <li>Send them to the address mentioned on the packing slip.</li>
             </ol>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ route('submission.packingSlip.download', $submission->id) }}" style="display: inline-block; padding: 14px 28px; background-color: #A3050A; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(163, 5, 10, 0.2);">Download Packing Slip</a>
+            </div>
 
             @if($submission->card_entry_mode === 'detailed')
             <h3 style="margin-top: 30px; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Submitted Cards</h3>

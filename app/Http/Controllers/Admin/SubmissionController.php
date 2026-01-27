@@ -55,13 +55,48 @@ class SubmissionController extends Controller
     {
         $request->validate([
             'status' => 'required|string|max:255',
+            'grade' => 'nullable|string|max:255',
+            'centering' => 'nullable|numeric|min:0|max:10',
+            'corners' => 'nullable|numeric|min:0|max:10',
+            'edges' => 'nullable|numeric|min:0|max:10',
+            'surface' => 'nullable|numeric|min:0|max:10',
+            'grading_insights' => 'nullable|string',
+            'is_revealed' => 'nullable|boolean',
+            'grading_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5000',
+            'back_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5000',
             'admin_notes' => 'nullable|string',
         ]);
 
-        $card->update([
-            'status' => $request->status,
-            'admin_notes' => $request->admin_notes,
+        $data = $request->only([
+            'status', 'grade', 'centering', 'corners', 'edges', 'surface', 
+            'grading_insights', 'admin_notes'
         ]);
+
+        $data['is_revealed'] = $request->has('is_revealed');
+
+        if ($request->hasFile('grading_image')) {
+            $path = $request->file('grading_image')->store('grading_images', 'public');
+            $data['grading_image'] = $path;
+        }
+
+        if ($request->hasFile('back_image')) {
+            $path = $request->file('back_image')->store('grading_images', 'public');
+            $data['back_image'] = $path;
+        }
+
+        // Ensure cert_number and qr_code_token exist
+        if (!$card->cert_number) {
+            do {
+                $cert = rand(100000, 999999);
+            } while (\App\Models\SubmissionCard::where('cert_number', $cert)->exists());
+            $data['cert_number'] = $cert;
+        }
+
+        if (!$card->qr_code_token) {
+            $data['qr_code_token'] = \Illuminate\Support\Str::random(32);
+        }
+
+        $card->update($data);
 
         return redirect()->route('admin.submissions.show', $card->submission_id)
             ->with('success', 'Card details updated successfully.');
@@ -89,18 +124,26 @@ class SubmissionController extends Controller
             }
         }
 
-        $submission->cards()->create([
-            'qty' => $request->qty,
-            'title' => $request->title,
-            'set_name' => $request->set_name,
-            'year' => $request->year,
-            'card_number' => $request->card_number,
-            'lang' => $request->lang,
-            'label_type_id' => $request->label_type_id ?? $submission->label_type_id, // Default to submission label type
-            'status' => 'Cards Received', // Default status for admin added cards
-        ]);
+        for ($i = 0; $i < $request->qty; $i++) {
+            do {
+                $cert = rand(100000, 999999);
+            } while (\App\Models\SubmissionCard::where('cert_number', $cert)->exists());
 
-        return back()->with('success', 'Card added successfully.');
+            $submission->cards()->create([
+                'qty' => 1,
+                'title' => $request->title,
+                'set_name' => $request->set_name,
+                'year' => $request->year,
+                'card_number' => $request->card_number,
+                'lang' => $request->lang,
+                'label_type_id' => $request->label_type_id ?? $submission->label_type_id,
+                'status' => 'Cards Received',
+                'cert_number' => $cert,
+                'qr_code_token' => \Illuminate\Support\Str::random(32),
+            ]);
+        }
+
+        return back()->with('success', 'Card(s) added successfully.');
     }
 
     public function destroy(Submission $submission)

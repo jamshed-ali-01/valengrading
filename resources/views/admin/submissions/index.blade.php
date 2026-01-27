@@ -3,13 +3,32 @@
 @section('title', 'Manage Submissions')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="submissionsTable">
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+        <div class="p-6 border-b border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
                 <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 All Submissions
             </h3>
+            
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Status Filter -->
+                <select x-model="status" class="bg-[#15171A] border border-white/10 rounded-xl px-4 py-2 text-xs text-gray-300 focus:outline-none focus:border-red-500 transition-all cursor-pointer">
+                    <option value="">All Statuses</option>
+                    @foreach(['draft', 'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled'] as $st)
+                        <option value="{{ $st }}">{{ strtoupper(str_replace('_', ' ', $st)) }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Search Input -->
+                <div class="relative">
+                    <input type="text" x-model="search" placeholder="Search by #No or Name..." 
+                        class="bg-[#15171A] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition-all w-64 pl-10">
+                    <svg class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
         
         <div class="overflow-x-auto">
@@ -26,7 +45,13 @@
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     @forelse($submissions as $submission)
-                        <tr class="hover:bg-white/[0.02] transition-colors group">
+                        <tr class="hover:bg-white/[0.02] transition-colors group"
+                            x-ref="row_{{ $loop->index }}"
+                            data-search="{{ strtolower($submission->submission_no . ' ' . ($submission->guest_name ?? '') . ' ' . ($submission->user->name ?? '') . ' ' . ($submission->user->email ?? '')) }}"
+                            data-status="{{ $submission->status }}"
+                            x-data
+                            x-show="isVisible($el)"
+                            style="display: none;">
                             <td class="px-6 py-4">
                                 <div class="font-bold text-white tracking-wide">#{{ $submission->submission_no }}</div>
                                 <div class="text-[10px] text-gray-500 uppercase font-medium mt-0.5">{{ $submission->created_at->format('M d, Y') }}</div>
@@ -89,9 +114,78 @@
             </table>
         </div>
 
-        <div class="px-6 py-4 border-t border-white/5 bg-white/[0.02]">
-            {{ $submissions->links() }}
+        <div class="px-6 py-4 border-t border-white/5 bg-white/[0.02] flex items-center justify-between">
+            <div class="text-xs text-gray-500">
+                Showing <span x-text="(currentPage - 1) * pageSize + 1"></span> to <span x-text="Math.min(currentPage * pageSize, filteredCount)"></span> of <span x-text="filteredCount"></span> entries
+            </div>
+            
+            <div class="flex items-center gap-2" x-show="filteredCount > pageSize">
+                <button @click="currentPage--" :disabled="currentPage === 1" 
+                    class="p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                
+                <span class="text-xs text-gray-400 font-mono bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                    Page <span x-text="currentPage"></span>
+                </span>
+
+                <button @click="currentPage++" :disabled="currentPage * pageSize >= filteredCount"
+                    class="p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('submissionsTable', () => ({
+            search: '',
+            status: '',
+            currentPage: 1,
+            pageSize: 15,
+            allRows: [],
+
+            init() {
+                // Capture all rows on init
+                this.allRows = Array.from(this.$el.querySelectorAll('tbody tr'));
+                
+                // Reset page on filter change
+                this.$watch('search', () => { this.currentPage = 1; });
+                this.$watch('status', () => { this.currentPage = 1; });
+            },
+
+            get filteredRows() {
+                if (!this.search && !this.status) return this.allRows;
+                
+                const searchLower = this.search.toLowerCase();
+                
+                return this.allRows.filter(row => {
+                    const searchData = row.dataset.search;
+                    const statusData = row.dataset.status;
+                    
+                    const matchesSearch = this.search === '' || searchData.includes(searchLower);
+                    const matchesStatus = this.status === '' || this.status === statusData;
+                    
+                    return matchesSearch && matchesStatus;
+                });
+            },
+
+            get filteredCount() {
+                return this.filteredRows.length;
+            },
+
+            get paginatedRows() {
+                const start = (this.currentPage - 1) * this.pageSize;
+                const end = start + this.pageSize;
+                return this.filteredRows.slice(start, end);
+            },
+
+            isVisible(el) {
+                return this.paginatedRows.includes(el);
+            }
+        }));
+    });
+</script>
 @endsection

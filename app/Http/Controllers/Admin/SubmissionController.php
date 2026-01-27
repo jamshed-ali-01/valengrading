@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $submissions = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'labelType'])
             ->latest()
-            ->paginate(10);
+            ->get();
 
         return view('admin.submissions.index', compact('submissions'));
     }

@@ -3,18 +3,28 @@
 @section('title', 'Submission Types Management')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Services (Submission Types)
-        </h3>
-        <a href="{{ route('admin.submission-types.create') }}" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-[#A3050A] text-white font-bold shadow-lg shadow-red-900/20 hover:scale-[1.02] transition-all duration-300 text-sm">
-            Add New Service Type
-        </a>
-    </div>
-
+<div class="space-y-6" x-data="{ search: '' }">
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Services (Submission Types)
+            </h3>
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Search Bar -->
+                <div class="relative group">
+                    <input type="text" x-model="search" placeholder="Search service..." 
+                        class="bg-[#15171A] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition-all w-64 pl-10">
+                    <svg class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <a href="{{ route('admin.submission-types.create') }}" class="px-6 py-2 rounded-xl bg-gradient-to-r from-red-600 to-[#A3050A] text-white font-bold shadow-lg shadow-red-900/20 hover:scale-[1.02] transition-all duration-300 text-xs uppercase tracking-widest">
+                    Add New
+                </a>
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-white/5 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
@@ -29,7 +39,8 @@
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     @foreach($submissionTypes as $type)
-                        <tr class="hover:bg-white/[0.02] transition-colors group">
+                        <tr class="hover:bg-white/[0.02] transition-colors group"
+                            x-show="search === '' || '{{ strtolower($type->name . ' ' . $type->title . ' ' . $type->description) }}'.includes(search.toLowerCase())">
                             <td class="px-6 py-4 text-gray-500 font-mono">{{ $type->order }}</td>
                             <td class="px-6 py-4 font-bold text-white">{{ $type->name }}</td>
                             <td class="px-6 py-4 text-gray-300">{{ $type->title ?? '-' }}</td>
@@ -40,7 +51,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.submission-types.edit', $type) }}" class="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     </a>

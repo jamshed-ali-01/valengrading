@@ -22,8 +22,9 @@
 <body>
     <div class="container">
         <div class="header">
+            @php $siteName = \App\Models\SiteSetting::get('site_name', 'Valen Grading'); @endphp
             <h1>Submission Received</h1>
-            <p>Thank you for choosing ValenGrading!</p>
+            <p>Thank you for choosing {{ $siteName }}!</p>
         </div>
         
         <div class="content">
@@ -84,7 +85,7 @@
         </div>
 
         <div class="footer">
-            <p>&copy; {{ date('Y') }} ValenGrading. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}. All rights reserved.</p>
             <p>If you have any questions, please contact us at support@valengrading.com</p>
         </div>
     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - ValenGrading</title>
+    <title>@yield('title', 'Admin Dashboard') - {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -12,8 +12,13 @@
     <div class="flex min-h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-[#232528] border-r border-white/5 flex-shrink-0 flex flex-col hidden md:flex">
-            <div class="p-6">
-                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-[#A3050A]">ValenAdmin</h1>
+            <div class="p-6 flex items-center gap-3">
+                @if($logo = \App\Models\SiteSetting::get('site_logo'))
+                    <img src="{{ $logo }}" class="h-8 w-auto object-contain" alt="Logo">
+                @endif
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-[#A3050A]">
+                    {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}
+                </h1>
             </div>
             
             <nav class="flex-1 px-4 space-y-1 overflow-y-auto pb-4 pt-4">

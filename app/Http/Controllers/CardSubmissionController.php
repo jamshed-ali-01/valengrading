@@ -327,17 +327,34 @@ class CardSubmissionController extends Controller
                     'quantity' => $card->qty ?? 1,
                 ];
             }
+        } else {
+            // Easy Mode
+            $labelCost = $submission->labelType?->price_adjustment ?? 0;
+            $unitAmount = ($submission->serviceLevel->price_per_card + $labelCost);
+            $totalCost += $unitAmount * $submission->total_cards;
+
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => "Grading Fee ({$submission->total_cards} Cards)",
+                        'description' => "Service Level: {$submission->serviceLevel->name} | Label: " . ($submission->labelType->name ?? 'Standard'),
+                    ],
+                    'unit_amount' => round($unitAmount * 100),
+                ],
+                'quantity' => $submission->total_cards,
+            ];
         }
 
         // Add Flat Rate Shipping
-        $shippingRate = 7.99;
+        $shippingRate = (float) \App\Models\SiteSetting::get('return_shipping_fee', 7.99);
         $submission->update(['shipping_amount' => $shippingRate]);
 
         $lineItems[] = [
             'price_data' => [
                 'currency' => 'eur',
                 'product_data' => [
-                    'name' => 'Flat Rate Shipping',
+                    'name' => 'Return Shipping (Flat Rate)',
                     'description' => 'Secure shipping for your collection',
                 ],
                 'unit_amount' => round($shippingRate * 100),

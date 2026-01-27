@@ -53,21 +53,55 @@
                         <h3 class="text-xl font-bold text-white leading-tight">Global Configuration</h3>
                         <p class="text-xs text-gray-500 mt-1 uppercase tracking-widest font-bold">Manage core application notifications</p>
                     </div>
-                    <form action="{{ route('admin.settings.update-general') }}" method="POST" class="space-y-8">
+                    <form action="{{ route('admin.settings.update-general') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                         @csrf
                         @method('PATCH')
-                        <div class="space-y-4">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Admin Notification Email</label>
-                            <input type="email" name="admin_notification_email" value="{{ old('admin_notification_email', $admin_notification_email) }}"
-                                class="w-full bg-[#15171A] border @error('admin_notification_email') border-red-500/50 @else border-white/10 @enderror rounded-xl px-5 py-4 text-white focus:outline-none focus:border-red-500 transition-all placeholder-gray-600 hover:border-white/20"
-                                placeholder="admin@valengrading.com">
-                            @error('admin_notification_email')
-                                <p class="text-red-500 text-xs mt-2 font-bold">{{ $message }}</p>
-                            @enderror
-                            <div class="flex items-start gap-3 p-4 bg-white/2 rounded-xl border border-white/5">
-                                <svg class="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <p class="text-xs text-gray-500 leading-relaxed italic">This address will receive high-priority alerts for new card submissions and payment confirmations.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Site Name</label>
+                                <input type="text" name="site_name" value="{{ old('site_name', $site_name) }}"
+                                    class="w-full bg-[#15171A] border {{ $errors->has('site_name') ? 'border-red-500/50' : 'border-white/10' }} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-red-500 transition-all font-medium"
+                                    placeholder="Valen Grading">
+                                @error('site_name') <p class="text-red-500 text-[10px] font-bold mt-1">{{ $message }}</p> @enderror
                             </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Admin Notification Email</label>
+                                <input type="email" name="admin_notification_email" value="{{ old('admin_notification_email', $admin_notification_email) }}"
+                                    class="w-full bg-[#15171A] border @error('admin_notification_email') border-red-500/50 @else border-white/10 @enderror rounded-xl px-5 py-4 text-white focus:outline-none focus:border-red-500 transition-all font-medium"
+                                    placeholder="admin@valengrading.com">
+                                @error('admin_notification_email') <p class="text-red-500 text-[10px] font-bold mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Return Shipping Fee (€)</label>
+                                <div class="relative">
+                                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 font-bold">€</span>
+                                    <input type="number" step="0.01" name="return_shipping_fee" value="{{ old('return_shipping_fee', $return_shipping_fee) }}"
+                                        class="w-full bg-[#15171A] border {{ $errors->has('return_shipping_fee') ? 'border-red-500/50' : 'border-white/10' }} rounded-xl pl-10 pr-5 py-4 text-white focus:outline-none focus:border-red-500 transition-all font-medium"
+                                        placeholder="7.99">
+                                </div>
+                                @error('return_shipping_fee') <p class="text-red-500 text-[10px] font-bold mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest">Site Logo</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 rounded-xl bg-[#15171A] border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                        @if($site_logo)
+                                            <img src="{{ $site_logo }}" class="w-full h-full object-contain" alt="Current Logo">
+                                        @else
+                                            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" name="site_logo" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-500/10 file:text-red-500 hover:file:bg-red-500/20 transition-all cursor-pointer">
+                                        <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-tight font-bold">PNG, JPG, SVG (Max 2MB)</p>
+                                    </div>
+                                </div>
+                                @error('site_logo') <p class="text-red-500 text-[10px] font-bold mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-white/2 rounded-xl border border-white/5">
+                            <svg class="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-xs text-gray-500 leading-relaxed italic">These are the primary branding and global pricing details used across the public and admin sites.</p>
                         </div>
                         <div class="pt-6 border-t border-white/5">
                             <button type="submit" class="bg-gradient-to-r from-red-600 to-[#A3050A] text-white font-bold px-10 py-4 rounded-xl shadow-2xl shadow-red-900/20 transition-all hover:scale-[1.02] active:scale-[0.98] uppercase tracking-widest text-xs">

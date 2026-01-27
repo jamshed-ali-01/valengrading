@@ -14,6 +14,9 @@ class SettingsController extends Controller
     {
         $settings = [
             'admin_notification_email' => SiteSetting::get('admin_notification_email', 'admin@valengrading.com'),
+            'site_name' => SiteSetting::get('site_name', 'Valen Grading'),
+            'site_logo' => SiteSetting::get('site_logo', ''),
+            'return_shipping_fee' => SiteSetting::get('return_shipping_fee', '7.99'),
             
             // SMTP Settings
             'mail_host' => SiteSetting::get('mail_host', 'smtp.mailtrap.io'),
@@ -39,13 +42,32 @@ class SettingsController extends Controller
 
     public function updateGeneral(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'admin_notification_email' => 'required|email',
+            'site_name' => 'required|string|max:255',
+            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'return_shipping_fee' => 'required|numeric|min:0',
         ]);
 
-        SiteSetting::set('admin_notification_email', $request->admin_notification_email);
+        if ($request->hasFile('site_logo')) {
+            // Delete old logo
+            $oldLogo = SiteSetting::get('site_logo');
+            if ($oldLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists(str_replace('/storage/', '', $oldLogo))) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $oldLogo));
+            }
 
-        return back()->with('success', 'General settings updated successfully.');
+            $path = $request->file('site_logo')->store('branding', 'public');
+            $data['site_logo'] = '/storage/' . $path;
+        } else {
+            // Keep existing logo if not uploading new one
+            unset($data['site_logo']);
+        }
+
+        foreach ($data as $key => $value) {
+            SiteSetting::set($key, $value, 'general');
+        }
+
+        return back()->with('success', 'General branding and configuration updated.');
     }
 
     public function updateSMTP(Request $request)

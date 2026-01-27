@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Review - ValenGrading</title>
+    <title>Order Review - {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -208,9 +208,18 @@
                         @endif
                     </tbody>
                     <tfoot class="bg-white/5">
+                        @php $shippingRate = (float) \App\Models\SiteSetting::get('return_shipping_fee', 7.99); @endphp
                         <tr>
-                            <td colspan="2" class="px-6 py-4 text-right font-bold text-white">Total Amount:</td>
-                            <td class="px-6 py-4 text-right font-bold text-red-500 text-lg">€{{ number_format($totalCost, 2) }}</td>
+                            <td colspan="2" class="px-6 py-3 text-right text-gray-400">Subtotal:</td>
+                            <td class="px-6 py-3 text-right font-medium text-white">€{{ number_format($totalCost, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="px-6 py-3 text-right text-gray-400">Return Shipping (Flat Rate):</td>
+                            <td class="px-6 py-3 text-right font-medium text-white">€{{ number_format($shippingRate, 2) }}</td>
+                        </tr>
+                        <tr class="border-t border-white/10">
+                            <td colspan="2" class="px-6 py-4 text-right font-bold text-white uppercase tracking-wider">Grand Total:</td>
+                            <td class="px-6 py-4 text-right font-bold text-red-500 text-xl tracking-tight">€{{ number_format($totalCost + $shippingRate, 2) }}</td>
                         </tr>
                     </tfoot>
                 </table>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Details - ValenGrading</title>
+    <title>Card Details - {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -320,6 +320,28 @@
     }
     
     validate();
+
+    // AJAX Login Modal Logic
+    const cardForm = document.getElementById('cardForm');
+    let authCheckPassed = false;
+
+    cardForm.addEventListener('submit', function(e) {
+        @guest
+            if (!authCheckPassed) {
+                e.preventDefault();
+                openLoginModal();
+            }
+        @endguest
+    });
+
+    // In the login-modal.blade.php success handler, we'll set authCheckPassed = true and re-submit
+    // Actually, calling .submit() on the form DOM element doesn't fire the 'submit' event again, so it's safe.
+    
+    // We already have mainForm.submit() in the modal script.
+
 </script>
+
+@include('components.login-modal')
+
 </body>
 </html>

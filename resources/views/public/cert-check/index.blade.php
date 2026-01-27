@@ -1,11 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Cert Check - ValenGrading')
+@section('title', 'Cert Check - ' . \App\Models\SiteSetting::get('site_name', 'Valen Grading'))
 
 @section('content')
 <div class="min-h-[80vh] flex items-center justify-center px-4">
     <div class="max-w-xl w-full">
         <div class="text-center mb-12">
+            @if($logo = \App\Models\SiteSetting::get('site_logo'))
+                <div class="mb-6 flex justify-center">
+                    <img src="{{ $logo }}" class="h-16 w-auto object-contain" alt="Logo">
+                </div>
+            @endif
             <h1 class="text-4xl font-bold text-white mb-4">Certification Verification</h1>
             <p class="text-gray-400">Enter a certification number to verify its authenticity and view the grading report.</p>
         </div>

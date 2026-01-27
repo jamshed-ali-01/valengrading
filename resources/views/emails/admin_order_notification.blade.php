@@ -96,7 +96,7 @@
             </div>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} ValenGrading. All rights reserved.
+            &copy; {{ date('Y') }} {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}. All rights reserved.
         </div>
     </div>
 </body>

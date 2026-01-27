@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -34,7 +34,25 @@ class AuthenticatedSessionController extends Controller
                 'user_id' => auth()->id(),
                 'temp_guest_id' => null
             ]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Logged in and submission linked.',
+                    'redirect' => route('submission.step4'),
+                    'csrf_token' => csrf_token()
+                ]);
+            }
+
             return redirect()->route('submission.step4');
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Logged in successfully.',
+                'csrf_token' => csrf_token()
+            ]);
         }
 
         $user = Auth::user();

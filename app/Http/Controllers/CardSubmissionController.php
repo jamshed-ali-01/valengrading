@@ -199,26 +199,26 @@ class CardSubmissionController extends Controller
 
     public function step4()
     {
-        if (! session()->has('pending_submission_id')) {
-            // If logged in, maybe verify they own the submission or have one in draft?
-             $submissionId = session('pending_submission_id');
-             if (!$submissionId) {
-                // Try to find latest draft for user
-                 if (auth()->check()) {
-                     $latest = Submission::where('user_id', auth()->id())->where('status', 'draft')->latest()->first();
-                     if ($latest) {
-                         session(['pending_submission_id' => $latest->id]);
-                     } else {
-                         return redirect()->route('submission.step1');
-                     }
-                 } else {
+        $submissionId = session('pending_submission_id');
+        if (!$submissionId) {
+            if (auth()->check()) {
+                $latest = Submission::where('user_id', auth()->id())->where('status', 'draft')->latest()->first();
+                if ($latest) {
+                    session(['pending_submission_id' => $latest->id]);
+                    $submissionId = $latest->id;
+                } else {
                     return redirect()->route('submission.step1');
-                 }
-             }
+                }
+            } else {
+                return redirect()->route('submission.step1');
+            }
         }
 
-        $shippingAddress = null;
-        if (auth()->check()) {
+        $submission = Submission::with('shippingAddress')->findOrFail($submissionId);
+        
+        // Priority: 1. Submission's own address, 2. User's latest address
+        $shippingAddress = $submission->shippingAddress;
+        if (!$shippingAddress && auth()->check()) {
             $shippingAddress = \App\Models\ShippingAddress::where('user_id', auth()->id())->latest()->first();
         }
 
@@ -239,19 +239,17 @@ class CardSubmissionController extends Controller
             'country' => 'required|string|max:100',
         ]);
 
-        if (auth()->check()) {
-            \App\Models\ShippingAddress::updateOrCreate(
-                ['user_id' => auth()->id()],
-                $validated
-            );
-        }
-
         $submissionId = session('pending_submission_id');
         $submission = Submission::findOrFail($submissionId);
 
-        $address = \App\Models\ShippingAddress::create(array_merge($validated, ['user_id' => auth()->id()]));
-        
-        $submission->update(['shipping_address_id' => $address->id]);
+        if ($submission->shipping_address_id) {
+            // Update existing address
+            $submission->shippingAddress->update($validated);
+        } else {
+            // Create new address and link it
+            $address = \App\Models\ShippingAddress::create(array_merge($validated, ['user_id' => auth()->id()]));
+            $submission->update(['shipping_address_id' => $address->id]);
+        }
 
         return redirect()->route('submission.step5');
     }

@@ -48,32 +48,35 @@
                 <input type="hidden" name="card_entry_mode" id="cardEntryMode" value="{{ old('card_entry_mode', $submission->card_entry_mode ?? 'easy') }}">
                 <input type="hidden" id="min_cards" value="{{ $serviceLevel->min_submission ?? 0 }}">
                 
-                <!-- Toggle Switch -->
-                <div class="p-1.5 bg-[#15171A] rounded-xl flex items-center mb-8 border border-white/10 w-fit mx-auto">
-                    <button type="button" onclick="setMode('easy')" id="easyModeBtn" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-white bg-gradient-to-r from-red-600 to-[#A3050A] shadow-lg">
-                        Easy Submission
-                    </button>
-                    <button type="button" onclick="setMode('detailed')" id="detailedModeBtn" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-gray-400 hover:text-white">
-                        Detailed Submission
-                    </button>
+                <!-- Toggle & Count Container -->
+                <div class="max-w-[340px] mx-auto space-y-4 mb-8">
+                    <!-- Toggle Switch -->
+                    <div class="p-1.5 bg-[#15171A] rounded-xl flex items-center border border-white/10 w-full">
+                        <button type="button" onclick="setMode('easy')" id="easyModeBtn" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-white bg-gradient-to-r from-red-600 to-[#A3050A] shadow-lg">
+                            Easy Submission
+                        </button>
+                        <button type="button" onclick="setMode('detailed')" id="detailedModeBtn" class="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden text-gray-400 hover:text-white">
+                            Detailed Submission
+                        </button>
+                    </div>
+
+                    <!-- Card Count Input -->
+                    <div class="bg-[#15171A]/50 p-3 rounded-xl border border-white/5 flex items-center justify-between gap-4">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest leading-tight">Number of<br>Cards:</span>
+                        <div class="relative w-24">
+                            <input type="number" name="total_cards" id="total_cards" min="1" 
+                                value="{{ old('total_cards', $submission->total_cards ?? '') }}"
+                                class="w-full bg-[#15171A] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500/50 text-center text-xl font-bold transition-all"
+                                placeholder="0">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Easy Mode -->
                 <div id="easyMode" class="max-w-md mx-auto">
                     <div class="text-center mb-6">
                         <h3 class="text-xl font-bold text-white mb-2">Easy Mode</h3>
-                        <p class="text-sm text-gray-400">Enter total count and select a default label type.</p>
-                    </div>
-
-                        <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Total Card Count</label>
-                            <input type="number" name="total_cards" id="total_cards" min="1" 
-                                value="{{ old('total_cards', $submission->total_cards ?? '') }}"
-                                class="w-full bg-[#15171A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-center text-xl font-bold placeholder-gray-700"
-                                placeholder="0">
-                        </div>
-
+                        <p class="text-sm text-gray-400">Your card count is set above. Proceed directly to shipping.</p>
                     </div>
                 </div>
 
@@ -113,9 +116,6 @@
                 </div>
 
                 <p id="error-message" class="mt-4 text-center text-sm text-red-500 hidden font-bold bg-red-500/10 p-2 rounded-lg border border-red-500/20"></p>
-                @error('total_cards')
-                    <p class="mt-2 text-sm text-red-500 text-center">{{ $message }}</p>
-                @enderror
                 @error('cards')
                     <p class="mt-2 text-sm text-red-500 text-center">{{ $message }}</p>
                 @enderror
@@ -170,8 +170,6 @@
             easyModeDiv.classList.remove('hidden');
             detailedModeDiv.classList.add('hidden');
             
-            totalCardsInput.setAttribute('required', 'true');
-            
             // Remove required from detailed inputs
             document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => el.removeAttribute('required'));
         } else {
@@ -184,14 +182,30 @@
             detailedModeDiv.classList.remove('hidden');
             easyModeDiv.classList.add('hidden');
             
-            totalCardsInput.removeAttribute('required');
-            
-            if (cardsContainer.children.length === 0) {
-                // Optional: Auto add one row
-            }
-            updateDetailedValidation();
+            syncRowsWithCount();
         }
         validate();
+    }
+
+    function syncRowsWithCount() {
+        if (modeInput.value !== 'detailed') return;
+        
+        const count = parseInt(totalCardsInput.value) || 0;
+        const currentRows = cardsContainer.children.length;
+        
+        if (count > currentRows) {
+            for (let i = 0; i < count - currentRows; i++) {
+                addCard();
+            }
+        } else if (count < currentRows) {
+            for (let i = 0; i < currentRows - count; i++) {
+                cardsContainer.lastElementChild.remove();
+            }
+            if (cardsContainer.children.length === 0) {
+                emptyState.classList.remove('hidden');
+            }
+            reindexRows();
+        }
     }
 
     function addCard(data = null) {
@@ -238,12 +252,17 @@
                 emptyState.classList.remove('hidden');
             }
             reindexRows();
+            totalCardsInput.value = cardsContainer.children.length; // Sync back to count
             validate();
         });
         
         row.querySelectorAll('input, select').forEach(input => {
             input.addEventListener('input', validate);
         });
+
+        if (modeInput.value === 'detailed') {
+            totalCardsInput.value = cardsContainer.children.length; // Sync back to count
+        }
         
         validate();
     }
@@ -259,32 +278,21 @@
         });
     }
 
-    function updateDetailedValidation() {
-        // Logic handled in addCard but re-run if needed
-    }
-
     function validate() {
         let isValid = true;
         let errorText = '';
         
-        if (modeInput.value === 'easy') {
-            const count = parseInt(totalCardsInput.value) || 0;
-            
-            if (minCards > 0 && count < minCards) {
-                isValid = false;
-                errorText = `Minimum ${minCards} cards required.`;
-            } else if (count <= 0) {
-                 // Silent fail or required prompt
-            }
-            
-            
-        } else {
+        const count = parseInt(totalCardsInput.value) || 0;
+        
+        if (minCards > 0 && count < minCards) {
+            isValid = false;
+            errorText = `Minimum ${minCards} cards required.`;
+        } else if (count <= 0) {
+            isValid = false;
+        }
+        
+        if (modeInput.value === 'detailed') {
             const rows = cardsContainer.children.length;
-            if (minCards > 0 && rows < minCards) {
-                isValid = false;
-                 errorText = `Minimum ${minCards} cards required. Added: ${rows}`;
-            }
-            
             if (rows === 0) isValid = false;
             
             // Check filled inputs
@@ -310,7 +318,10 @@
     }
 
     // Init
-    totalCardsInput.addEventListener('input', validate);
+    totalCardsInput.addEventListener('input', () => {
+        syncRowsWithCount();
+        validate();
+    });
     
     // Check initial state
     setMode(window.initialMode);

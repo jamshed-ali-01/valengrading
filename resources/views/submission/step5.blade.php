@@ -208,18 +208,49 @@
                         @endif
                     </tbody>
                     <tfoot class="bg-white/5">
-                        @php $shippingRate = (float) \App\Models\SiteSetting::get('return_shipping_fee', 7.99); @endphp
+                        @php 
+                            $shippingRate = (float) \App\Models\SiteSetting::get('return_shipping_fee', 7.99); 
+                            $cardCount = ($submission->card_entry_mode === 'detailed') ? $submission->cards->sum('qty') : $submission->total_cards;
+                            
+                            $basePrice = $submission->serviceLevel->price_per_card;
+                            $totalBaseCost = $basePrice * $cardCount;
+                            
+                            // Calculate total label cost separately for the summary
+                            $totalLabelCost = 0;
+                            if ($submission->card_entry_mode === 'detailed') {
+                                foreach($submission->cards as $card) {
+                                    $totalLabelCost += ($card->labelType?->price_adjustment ?? 0) * ($card->qty ?? 1);
+                                }
+                            } else {
+                                $totalLabelCost = ($submission->labelType?->price_adjustment ?? 0) * $cardCount;
+                            }
+                        @endphp
                         <tr>
-                            <td colspan="2" class="px-6 py-3 text-right text-gray-400">Subtotal:</td>
-                            <td class="px-6 py-3 text-right font-medium text-white">€{{ number_format($totalCost, 2) }}</td>
+                            <td colspan="2" class="px-6 py-3 text-right text-gray-400">
+                                Card Grading Fee ({{ $cardCount }} x €{{ number_format($basePrice, 2) }}):
+                            </td>
+                            <td class="px-6 py-3 text-right font-medium text-white">€{{ number_format($totalBaseCost, 2) }}</td>
                         </tr>
+                        @if($totalLabelCost != 0)
+                        <tr>
+                            <td colspan="2" class="px-6 py-3 text-right text-gray-400">
+                                Label Upgrades:
+                            </td>
+                            <td class="px-6 py-3 text-right font-medium text-white">
+                                @if($submission->card_entry_mode === 'easy')
+                                    <span class="text-xs text-gray-500 mr-2">{{ $cardCount }} x €{{ number_format($submission->labelType->price_adjustment, 2) }}</span>
+                                @endif
+                                €{{ number_format($totalLabelCost, 2) }}
+                            </td>
+                        </tr>
+                        @endif
                         <tr>
                             <td colspan="2" class="px-6 py-3 text-right text-gray-400">Return Shipping (Flat Rate):</td>
                             <td class="px-6 py-3 text-right font-medium text-white">€{{ number_format($shippingRate, 2) }}</td>
                         </tr>
                         <tr class="border-t border-white/10">
                             <td colspan="2" class="px-6 py-4 text-right font-bold text-white uppercase tracking-wider">Grand Total:</td>
-                            <td class="px-6 py-4 text-right font-bold text-red-500 text-xl tracking-tight">€{{ number_format($totalCost + $shippingRate, 2) }}</td>
+                            <td class="px-6 py-4 text-right font-bold text-red-500 text-xl tracking-tight">€{{ number_format($totalBaseCost + $totalLabelCost + $shippingRate, 2) }}</td>
                         </tr>
                     </tfoot>
                 </table>

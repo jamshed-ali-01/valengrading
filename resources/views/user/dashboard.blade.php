@@ -16,7 +16,7 @@
                 <div class="flex flex-col justify-between h-full min-h-[90px]">
                     <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Submissions</span>
                     <div class="flex justify-between items-end">
-                        <span class="text-4xl font-bold text-white">8</span>
+                        <span class="text-4xl font-bold text-white">{{ $totalSubmissions }}</span>
                         <div class="text-[var(--color-primary)] opacity-80">
                             <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -33,7 +33,7 @@
                 <div class="flex flex-col justify-between h-full min-h-[90px]">
                     <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Cards Graded</span>
                     <div class="flex justify-between items-end">
-                        <span class="text-4xl font-bold text-white">23</span>
+                        <span class="text-4xl font-bold text-white">{{ $cardsGraded }}</span>
                         <div class="text-green-500 opacity-80">
                             <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -50,7 +50,7 @@
                 <div class="flex flex-col justify-between h-full min-h-[90px]">
                     <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Submission In Progress</span>
                     <div class="flex justify-between items-end">
-                        <span class="text-4xl font-bold text-white">2</span>
+                        <span class="text-4xl font-bold text-white">{{ $inProgress }}</span>
                         <div class="text-blue-500 opacity-80">
                             <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -67,7 +67,7 @@
                 <div class="flex flex-col justify-between h-full min-h-[90px]">
                     <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Spent</span>
                     <div class="flex justify-between items-end">
-                        <span class="text-4xl font-bold text-white">10,000</span>
+                        <span class="text-4xl font-bold text-white">{{ number_format($totalSpent, 2) }}</span>
                         <div class="text-[var(--color-primary)] font-bold text-4xl opacity-80">$</div>
                     </div>
                 </div>
@@ -130,8 +130,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-1">3 Cards Completed</h3>
-                        <p class="text-sm text-gray-500">Your latest submission is ready for pickup</p>
+                        <h3 class="text-xl font-bold text-white mb-1">{{ $cardsGraded }} Cards Completed</h3>
+                        <p class="text-sm text-gray-500">Your total graded collection</p>
                     </div>
 
                     <!-- Cards In Progress Block -->
@@ -144,7 +144,7 @@
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-1">2 Cards In Progress</h3>
+                        <h3 class="text-xl font-bold text-white mb-1">{{ $totalSubmissions - $submissions->where('status', 'completed')->count() }} Submissions Active</h3>
                         <p class="text-sm text-gray-500">Currently in the grading process</p>
                     </div>
                 </div>
@@ -160,100 +160,78 @@
                 <h2 class="text-xl font-bold text-white mb-8 text-center">My Card Collection</h2>
 
                 <div class="space-y-4">
-                    <!-- Card Item 1 -->
+                    @forelse($myCards as $card)
                     <div
                         class="bg-[var(--color-valen-dark)] border border-[var(--color-valen-border)] rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[var(--color-valen-border)]/80 transition-colors group">
                         <div class="flex items-center gap-6 w-full">
-                            <!-- Image Placeholder -->
-                            <div
-                                class="w-24 h-32 bg-[var(--color-valen-light)] rounded border border-[var(--color-valen-border)] flex-shrink-0">
+                            <!-- Image Placeholder or Actual Image -->
+                            <div class="w-24 h-32 bg-[var(--color-valen-light)] rounded border border-[var(--color-valen-border)] flex-shrink-0 overflow-hidden relative">
+                                @if($card->grading_image)
+                                    <img src="{{ asset($card->grading_image) }}" alt="{{ $card->title }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-gray-600">
+                                        <svg class="w-8 h-8 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                @endif
+                                
+                                @if($card->grade)
+                                    <div class="absolute top-0 right-0 bg-[var(--color-primary)] text-white text-xs font-bold px-1.5 py-0.5 rounded-bl">
+                                        {{ $card->grade }}
+                                    </div>
+                                @endif
                             </div>
 
                             <div>
-                                <h3 class="text-white font-bold text-lg">Charizard Base Set Holo</h3>
-                                <p class="text-gray-400 text-sm mb-4">Jungle • 1999</p>
+                                <h3 class="text-white font-bold text-lg">{{ $card->title ?? 'Untitled Card' }}</h3>
+                                <p class="text-gray-400 text-sm mb-4">{{ $card->set_name }} • {{ $card->year }}</p>
 
-                                <button
-                                    class="bg-white text-black text-xs font-bold px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                @if($card->grade)
+                                <div class="inline-flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1 rounded-full text-xs font-bold border border-green-500/20">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Reveal Grade
-                                </button>
+                                    Graded: {{ $card->grade }}
+                                </div>
+                                @else
+                                <span class="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-xs font-bold border border-yellow-500/20">
+                                    In Grading
+                                </span>
+                                @endif
                             </div>
                         </div>
 
-                        <div class="flex gap-8 pr-4">
-                            <button
+                        <div class="flex gap-4 pr-4">
+                            @if($card->grading_report_path)
+                            <a href="{{ asset($card->grading_report_path) }}" target="_blank"
                                 class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
                                 <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <span class="text-[10px] uppercase font-bold tracking-wider">View<br>Report</span>
-                            </button>
-                            <button
+                                <span class="text-[10px] uppercase font-bold tracking-wider">Report</span>
+                            </a>
+                            @endif
+                            
+                            <a href="{{ route('pop-report') }}"
                                 class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
                                 <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
-                                <span class="text-[10px] uppercase font-bold tracking-wider">Pop<br>Report</span>
-                            </button>
+                                <span class="text-[10px] uppercase font-bold tracking-wider">Pop Report</span>
+                            </a>
                         </div>
                     </div>
-
-                    <!-- Card Item 2 -->
-                    <div
-                        class="bg-[var(--color-valen-dark)] border border-[var(--color-valen-border)] rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[var(--color-valen-border)]/80 transition-colors group">
-                        <div class="flex items-center gap-6 w-full">
-                            <div
-                                class="w-24 h-32 bg-[var(--color-valen-light)] rounded border border-[var(--color-valen-border)] flex-shrink-0">
-                            </div>
-
-                            <div>
-                                <h3 class="text-white font-bold text-lg">Pikachu First Edition</h3>
-                                <p class="text-gray-400 text-sm mb-4">Jungle • 1999</p>
-
-                                <button
-                                    class="bg-white text-black text-xs font-bold px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                    Reveal Grade
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-8 pr-4">
-                            <button
-                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
-                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span class="text-[10px] uppercase font-bold tracking-wider">View<br>Report</span>
-                            </button>
-                            <button
-                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
-                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                                <span class="text-[10px] uppercase font-bold tracking-wider">Pop<br>Report</span>
-                            </button>
-                        </div>
+                    @empty
+                    <div class="text-center py-12">
+                        <p class="text-gray-400 mb-4">You haven't submitted any cards yet.</p>
+                        <a href="{{ route('multiform') }}" class="text-[var(--color-primary)] hover:underline">Start a Submission</a>
                     </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -261,87 +239,71 @@
             <div x-show="activeTab === 'status'" class="p-8" style="display: none;">
                 <h2 class="text-xl font-bold text-white mb-8 text-center">My Order Status</h2>
 
-                <!-- Status Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <!-- Complete -->
-                    <div
-                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
-                        <div
-                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
+                <div class="space-y-6">
+                    @forelse($submissions as $submission)
+                    <div class="bg-[var(--color-valen-dark)]/50 border border-[var(--color-valen-border)] rounded-lg p-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                            <div>
+                                <h3 class="text-white font-bold text-lg mb-1">Order #{{ $submission->submission_no }}</h3>
+                                <p class="text-gray-400 text-sm">Submitted on {{ $submission->created_at->format('F j, Y') }}</p>
+                            </div>
+                            <div class="mt-2 md:mt-0 flex items-center gap-2 text-sm text-gray-300">
+                                Current Status: <span class="text-[var(--color-primary)] font-bold uppercase">{{ ucfirst(str_replace('_', ' ', $submission->status)) }}</span>
+                            </div>
                         </div>
-                        <span class="text-green-500 text-sm font-medium">Submission Complete</span>
-                    </div>
-                    <div
-                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
-                        <div
-                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <span class="text-green-500 text-sm font-medium">Cards Received</span>
-                    </div>
-                    <div
-                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
-                        <div
-                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <span class="text-green-500 text-sm font-medium">In Grading</span>
-                    </div>
-                    <div
-                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
-                        <div
-                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <span class="text-green-500 text-sm font-medium">Label Creation</span>
-                    </div>
-                    <div
-                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
-                        <div
-                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <span class="text-green-500 text-sm font-medium">Slabbed</span>
-                    </div>
-                    <!-- Current Status Red -->
-                    <div
-                        class="bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded flex items-center p-3 gap-3 animate-pulse">
-                        <div
-                            class="w-5 h-5 rounded-full border border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary)]">
-                            <div class="w-2.5 h-2.5 bg-[var(--color-primary)] rounded-full"></div>
-                        </div>
-                        <span class="text-[var(--color-primary)] text-sm font-medium">Quality Control</span>
-                    </div>
-                </div>
 
-                <div class="bg-[var(--color-valen-dark)]/50 border border-[var(--color-valen-border)] rounded-lg p-6">
-                    <h3 class="text-white font-bold text-lg mb-1">Order #VG-12345</h3>
-                    <p class="text-gray-400 text-sm mb-6">Submitted on January 15, 2024</p>
+                        <!-- Status Grid (Simplistic Visual Tracker) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Helper to check completion based on status enum -->
+                            @php
+                                $status = $submission->status;
+                                $progress = 0;
+                                // Map backend status to visual progress steps
+                                // 1: Received (Paid/Processing+)
+                                // 2: In Grading (Processing+) -- Assuming processing implies grading started
+                                // 3: Completed (Shipped/Completed)
+                                
+                                if(in_array($status, ['paid', 'processing', 'shipped', 'completed'])) $progress = 1;
+                                if(in_array($status, ['processing', 'shipped', 'completed'])) $progress = 2;
+                                if(in_array($status, ['shipped', 'completed'])) $progress = 3;
+                            @endphp
 
-                    <div class="flex items-center gap-2 text-sm text-gray-300">
-                        Current Status: <span class="text-[var(--color-primary)] font-bold uppercase">Quality Control</span>
+                            <!-- Step 1: Received -->
+                            <div class="bg-[var(--color-valen-light)]/40 border {{ $progress >= 1 ? 'border-green-900/50' : 'border-gray-800' }} rounded flex items-center p-3 gap-3">
+                                <div class="w-5 h-5 rounded-full border {{ $progress >= 1 ? 'border-green-500 text-green-500' : 'border-gray-600 text-gray-600' }} flex items-center justify-center">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                </div>
+                                <span class="{{ $progress >= 1 ? 'text-green-500' : 'text-gray-500' }} text-sm font-medium">Received</span>
+                            </div>
+
+                            <!-- Step 2: Grading/Processing -->
+                            <div class="bg-[var(--color-valen-light)]/40 border {{ $progress >= 2 ? 'border-green-900/50' : ($progress == 2 ? 'border-[var(--color-primary)]/30' : 'border-gray-800') }} rounded flex items-center p-3 gap-3 relative overflow-hidden">
+                                <div class="w-5 h-5 rounded-full border {{ $progress > 2 ? 'border-green-500 text-green-500' : ($progress == 2 ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-gray-600 text-gray-600') }} flex items-center justify-center">
+                                    @if($progress > 2)
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                    @elseif($progress == 2)
+                                        <div class="w-2.5 h-2.5 bg-[var(--color-primary)] rounded-full animate-pulse"></div>
+                                    @else
+                                        <div class="w-2.5 h-2.5 bg-gray-600 rounded-full"></div>
+                                    @endif
+                                </div>
+                                <span class="{{ $progress > 2 ? 'text-green-500' : ($progress == 2 ? 'text-[var(--color-primary)]' : 'text-gray-500') }} text-sm font-medium">In Grading</span>
+                            </div>
+
+                            <!-- Step 3: Completed/Shipped -->
+                            <div class="bg-[var(--color-valen-light)]/40 border {{ $progress >= 3 ? 'border-green-900/50' : 'border-gray-800' }} rounded flex items-center p-3 gap-3">
+                                <div class="w-5 h-5 rounded-full border {{ $progress >= 3 ? 'border-green-500 text-green-500' : 'border-gray-600 text-gray-600' }} flex items-center justify-center">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                </div>
+                                <span class="{{ $progress >= 3 ? 'text-green-500' : 'text-gray-500' }} text-sm font-medium">Completed</span>
+                            </div>
+                        </div>
                     </div>
+                    @empty
+                    <div class="text-center py-12">
+                        <p class="text-gray-400">No recent orders found.</p>
+                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -353,11 +315,12 @@
                             <span class="w-1.5 h-6 bg-[var(--color-primary)] rounded-sm"></span>
                             Personal Information
                         </h3>
+                        <!-- Note: User model has single 'name'. Splitting for display if needed or just using First Name for Full Name -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <x-ui.valen-input label="First Name" name="first_name" placeholder="First Name" />
+                            <x-ui.valen-input label="First Name" name="first_name" placeholder="First Name" :value="$user->name" />
                             <x-ui.valen-input label="Last Name" name="last_name" placeholder="Last Name" />
-                            <x-ui.valen-input label="Email Address" name="email" placeholder="email@example.com" />
-                            <x-ui.valen-input label="Phone Number" name="phone" placeholder="+1 (555) 000-0000" />
+                            <x-ui.valen-input label="Email Address" name="email" placeholder="email@example.com" :value="$user->email" />
+                            <x-ui.valen-input label="Phone Number" name="phone" placeholder="+1 (555) 000-0000" :value="$latestAddress->number ?? ''" />
                         </div>
                         <div class="mt-6 text-right">
                             <x-ui.valen-button>Save Personal Information</x-ui.valen-button>
@@ -370,13 +333,13 @@
                             Delivery Address
                         </h3>
                         <div class="space-y-6">
-                            <x-ui.valen-input label="Street Address" name="street" placeholder="Street Address" />
+                            <x-ui.valen-input label="Street Address" name="street" placeholder="Street Address" :value="$latestAddress->address_line_1 ?? ''" />
                             <div class="grid grid-cols-3 gap-6">
-                                <x-ui.valen-input label="City" name="city" placeholder="City" />
-                                <x-ui.valen-input label="State" name="state" placeholder="State" />
-                                <x-ui.valen-input label="Zip Code" name="zip" placeholder="Zip Code" />
+                                <x-ui.valen-input label="City" name="city" placeholder="City" :value="$latestAddress->city ?? ''" />
+                                <x-ui.valen-input label="State" name="state" placeholder="State/County" :value="$latestAddress->county ?? ''" />
+                                <x-ui.valen-input label="Zip Code" name="zip" placeholder="Zip Code" :value="$latestAddress->post_code ?? ''" />
                             </div>
-                            <x-ui.valen-input label="Country" name="country" placeholder="Country" />
+                            <x-ui.valen-input label="Country" name="country" placeholder="Country" :value="$latestAddress->country ?? ''" />
                         </div>
                         <div class="mt-6 text-right">
                             <x-ui.valen-button>Save Delivery Address</x-ui.valen-button>

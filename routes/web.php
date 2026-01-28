@@ -33,10 +33,8 @@ Route::get('/about', function () {
 })->name('about');
 
 // User Routes (New)
-Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('dashboard');
+Route::prefix('user')->name('user.')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\UserDashboardController::class, 'index'])->name('dashboard');
 });
 
 // Admin Routes (Preserved)

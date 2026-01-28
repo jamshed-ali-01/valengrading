@@ -46,6 +46,6 @@ class PopulationReportController extends Controller
             ->orderBy('title', 'asc')
             ->paginate(20);
 
-        return view('population_report.index', compact('reports'));
+        return view('frontend.pop-report', compact('reports'));
     }
 }

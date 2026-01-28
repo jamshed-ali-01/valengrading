@@ -1,3 +1,92 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+
+    --color-primary: #A3050A;
+    --color-primary-hover: #8a0408;
+    --color-valen-dark: #121417;
+    --color-valen-light: #1C1E21;
+    --color-valen-border: #2A2D35;
+    --color-text-main: #ffffff;
+    --color-text-muted: #9ca3af;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-valen-dark);
+        color: var(--color-text-main);
+    }
+    input, select, textarea {
+        background-color: var(--color-valen-light);
+        border: 1px solid var(--color-valen-border);
+        color: white;
+    }
+}
+
+.glass-effect {
+    background: rgba(28, 30, 33, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+@layer base {
+    body {
+        background-color: var(--color-valen-dark);
+        color: var(--color-text-main);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    animation: marquee 15s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}

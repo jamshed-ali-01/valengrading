@@ -4,26 +4,53 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CardSubmissionController;
 use Illuminate\Support\Facades\Route;
 
+// New Frontend Routes
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.home');
+})->name('home');
+
+Route::get('/multiform', function () {
+    return view('frontend.multiform.index');
+})->name('multiform');
+
+Route::get('/faq', function () {
+    return view('frontend.faq');
+})->name('faq');
+
+
+Route::get('/contact', function () {
+    return view('frontend.contact');
+})->name('contact');
+
+Route::get('/pricing', function () {
+    return view('frontend.pricing');
+})->name('pricing');
+
+Route::get('/about', function () {
+    return view('frontend.about');
+})->name('about');
+
+// User Routes (New)
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('user.dashboard');
+    })->name('dashboard');
 });
 
-
-
+// Admin Routes (Preserved)
 Route::get('/admin/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('population', \App\Http\Controllers\Admin\PopulationReportController::class);
-    // Add existing submission controller resource if not already there, but for now just population is new
     Route::get('/submissions', [\App\Http\Controllers\Admin\SubmissionController::class, 'index'])->name('submissions.index');
-     Route::get('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'show'])->name('submissions.show');
-      Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.updateStatus');
-       Route::delete('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'destroy'])->name('submissions.destroy');
+    Route::get('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'show'])->name('submissions.show');
+    Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.updateStatus');
+    Route::delete('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'destroy'])->name('submissions.destroy');
     Route::get('/submissions/cards/{card}/edit', [\App\Http\Controllers\Admin\SubmissionController::class, 'editCard'])->name('submissions.cards.edit');
-     Route::patch('/submissions/cards/{card}', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateCard'])->name('submissions.cards.update');
-      Route::post('/submissions/{submission}/cards', [\App\Http\Controllers\Admin\SubmissionController::class, 'storeCard'])->name('submissions.cards.store');
+    Route::patch('/submissions/cards/{card}', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateCard'])->name('submissions.cards.update');
+    Route::post('/submissions/{submission}/cards', [\App\Http\Controllers\Admin\SubmissionController::class, 'storeCard'])->name('submissions.cards.store');
 });
 
 Route::middleware('auth')->group(function () {
@@ -34,6 +61,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+// Submission Routes (Preserved)
 Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
     Route::get('/start', [CardSubmissionController::class, 'index'])->name('step1');
     Route::post('/start', [CardSubmissionController::class, 'storeStep1'])->name('storeStep1');
@@ -50,7 +78,7 @@ Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
 
     // Step 5: Review
     Route::get('/review', [CardSubmissionController::class, 'step5'])->name('step5');
-    // Route::post('/review', [CardSubmissionController::class, 'storeStep5'])->name('storeStep5'); // Maybe just link to payment?
+    // Route::post('/review', [CardSubmissionController::class, 'storeStep5'])->name('storeStep5'); 
 
     // Step 6: Payment
     Route::get('/payment', [CardSubmissionController::class, 'step6'])->name('step6');
@@ -64,4 +92,5 @@ Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
 Route::get('/cert-check', [\App\Http\Controllers\CardReportController::class, 'index'])->name('cert.index');
 Route::post('/cert-check/search', [\App\Http\Controllers\CardReportController::class, 'search'])->name('cert.search');
 Route::get('/card/{cert_number}', [\App\Http\Controllers\CardReportController::class, 'show'])->name('card.report');
-Route::get('/population-report', [\App\Http\Controllers\PopulationReportController::class, 'index'])->name('pop-report.index');
+Route::get('/pop-report', [\App\Http\Controllers\PopulationReportController::class, 'index'])->name('pop-report');
+

@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Details - {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
+@extends('layouts.frontend')
+
+@section('content')
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <div class="min-h-screen bg-[#15171A] text-white font-['Outfit'] py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
         <!-- Progress Steps -->
@@ -139,7 +133,6 @@
         </div>
     </div>
 </div>
-
 <script>
     // Pass PHP data to JS
     window.labelTypes = @json($labelTypes);
@@ -353,6 +346,4 @@
 </script>
 
 @include('components.login-modal')
-
-</body>
-</html>
+@endsection

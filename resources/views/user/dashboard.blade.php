@@ -1,170 +1,408 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ValenGrading</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #0F1113; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .red-glow { box-shadow: 0 0 50px rgba(163, 5, 10, 0.1); }
-        .reveal-gradient { background: linear-gradient(135deg, #A3050A 0%, #E31E24 100%); }
-    </style>
-</head>
-<body class="antialiased">
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#0F1113]/80 backdrop-blur-xl sticky top-0 z-50">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 label-gradient rounded-xl flex items-center justify-center font-bold text-xl shadow-lg ring-1 ring-white/20">V</div>
-                <h1 class="text-xl font-bold tracking-tight">Collector Center</h1>
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-bold text-white leading-none mb-1">{{ auth()->user()->name }}</p>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Collector</p>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="p-2 text-gray-500 hover:text-red-500 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                    </button>
-                </form>
-            </div>
-        </header>
+@extends('layouts.frontend')
 
-        <main class="flex-1 p-8 max-w-7xl mx-auto w-full">
-            <!-- stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="glass p-6 rounded-3xl red-glow">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Total Submissions</span>
-                    <span class="text-3xl font-bold">{{ $stats['total_submissions'] }}</span>
-                </div>
-                <div class="glass p-6 rounded-3xl">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Total Cards</span>
-                    <span class="text-3xl font-bold">{{ $stats['total_cards'] }}</span>
-                </div>
-                <div class="glass p-6 rounded-3xl border-red-500/20">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Active Orders</span>
-                    <span class="text-3xl font-bold text-red-500">{{ $stats['active_orders'] }}</span>
+@section('content')
+    <div x-data="{ activeTab: 'overview' }" class="pb-20 pt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Dashboard Header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-white mb-2">My Dashboard</h1>
+            <p class="text-gray-400">Track your card grading submissions and manage your account</p>
+        </div>
+
+        <!-- 4 Stats Cards Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <!-- Total Submissions -->
+            <div
+                class="bg-[var(--color-valen-light)] rounded-lg p-6 border border-[var(--color-valen-border)] relative overflow-hidden group">
+                <div class="flex flex-col justify-between h-full min-h-[90px]">
+                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Submissions</span>
+                    <div class="flex justify-between items-end">
+                        <span class="text-4xl font-bold text-white">8</span>
+                        <div class="text-[var(--color-primary)] opacity-80">
+                            <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Submissions -->
-            <div class="space-y-8">
-                <h2 class="text-xl font-bold px-2">Your Submissions</h2>
-                
-                @forelse($submissions as $submission)
-                <div x-data="{ open: false }" class="glass rounded-[2rem] overflow-hidden transition-all duration-300" :class="open ? 'ring-2 ring-red-500/20' : ''">
-                    <!-- Order Header -->
-                    <div class="p-8 flex flex-wrap items-center justify-between gap-6 cursor-pointer hover:bg-white/5 transition-colors" @click="open = !open">
-                        <div class="flex items-center gap-6">
-                            <div class="w-16 h-16 rounded-2xl bg-white/5 flex flex-col items-center justify-center border border-white/5">
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-tighter">ORDER</span>
-                                <span class="text-lg font-bold">#{{ $submission->submission_no }}</span>
+            <!-- Cards Graded -->
+            <div
+                class="bg-[var(--color-valen-light)] rounded-lg p-6 border border-[var(--color-valen-border)] relative overflow-hidden group">
+                <div class="flex flex-col justify-between h-full min-h-[90px]">
+                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Cards Graded</span>
+                    <div class="flex justify-between items-end">
+                        <span class="text-4xl font-bold text-white">23</span>
+                        <div class="text-green-500 opacity-80">
+                            <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submission In Progress -->
+            <div
+                class="bg-[var(--color-valen-light)] rounded-lg p-6 border border-[var(--color-valen-border)] relative overflow-hidden group">
+                <div class="flex flex-col justify-between h-full min-h-[90px]">
+                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Submission In Progress</span>
+                    <div class="flex justify-between items-end">
+                        <span class="text-4xl font-bold text-white">2</span>
+                        <div class="text-blue-500 opacity-80">
+                            <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Spent -->
+            <div
+                class="bg-[var(--color-valen-light)] rounded-lg p-6 border border-[var(--color-valen-border)] relative overflow-hidden group">
+                <div class="flex flex-col justify-between h-full min-h-[90px]">
+                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Total Spent</span>
+                    <div class="flex justify-between items-end">
+                        <span class="text-4xl font-bold text-white">10,000</span>
+                        <div class="text-[var(--color-primary)] font-bold text-4xl opacity-80">$</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segmented Tab Navigation -->
+        <div
+            class="bg-[var(--color-valen-light)] rounded-lg border border-[var(--color-valen-border)] p-1 grid grid-cols-4 gap-1 mb-8">
+            <button @click="activeTab = 'overview'"
+                class="flex items-center justify-center py-3 rounded text-sm font-medium transition-all duration-300"
+                :class="activeTab === 'overview' ? 'bg-[var(--color-primary)] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </button>
+            <button @click="activeTab = 'cards'"
+                class="flex items-center justify-center py-3 rounded text-sm font-medium transition-all duration-300"
+                :class="activeTab === 'cards' ? 'bg-[var(--color-primary)] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </button>
+            <button @click="activeTab = 'status'"
+                class="flex items-center justify-center py-3 rounded text-sm font-medium transition-all duration-300"
+                :class="activeTab === 'status' ? 'bg-[var(--color-primary)] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </button>
+            <button @click="activeTab = 'profile'"
+                class="flex items-center justify-center py-3 rounded text-sm font-medium transition-all duration-300"
+                :class="activeTab === 'profile' ? 'bg-[var(--color-primary)] text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Content Area with Glass Effect -->
+        <div class="glass-effect rounded-lg p-1 min-h-[500px] animate-slide-up">
+
+            <!-- OVERVIEW TAB -->
+            <div x-show="activeTab === 'overview'"
+                class="p-8 flex flex-col items-center justify-center h-full min-h-[400px]">
+                <h2 class="text-2xl font-bold text-white mb-2">Welcome Back!</h2>
+                <p class="text-gray-400 mb-12">Here's a summary of your recent grading activity</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mb-12">
+                    <!-- Cards Completed Block -->
+                    <div
+                        class="bg-[var(--color-valen-light)]/50 border border-[var(--color-valen-border)] rounded-xl p-8 flex flex-col items-center justify-center hover:border-green-500/50 transition-colors cursor-pointer group">
+                        <div
+                            class="w-12 h-12 rounded-full border border-green-500/30 flex items-center justify-center mb-4 text-green-500 group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">3 Cards Completed</h3>
+                        <p class="text-sm text-gray-500">Your latest submission is ready for pickup</p>
+                    </div>
+
+                    <!-- Cards In Progress Block -->
+                    <div
+                        class="bg-[var(--color-valen-light)]/50 border border-[var(--color-valen-border)] rounded-xl p-8 flex flex-col items-center justify-center hover:border-blue-500/50 transition-colors cursor-pointer group">
+                        <div
+                            class="w-12 h-12 rounded-full border border-blue-500/30 flex items-center justify-center mb-4 text-blue-500 group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">2 Cards In Progress</h3>
+                        <p class="text-sm text-gray-500">Currently in the grading process</p>
+                    </div>
+                </div>
+
+                <a href="{{ route('multiform') }}"
+                    class="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white px-8 py-3 rounded text-sm font-semibold transition-all shadow-[0_0_20px_rgba(163,5,10,0.4)] hover:shadow-[0_0_30px_rgba(163,5,10,0.6)]">
+                    Submit New Cards
+                </a>
+            </div>
+
+            <!-- MY CARDS TAB -->
+            <div x-show="activeTab === 'cards'" class="p-8" style="display: none;">
+                <h2 class="text-xl font-bold text-white mb-8 text-center">My Card Collection</h2>
+
+                <div class="space-y-4">
+                    <!-- Card Item 1 -->
+                    <div
+                        class="bg-[var(--color-valen-dark)] border border-[var(--color-valen-border)] rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[var(--color-valen-border)]/80 transition-colors group">
+                        <div class="flex items-center gap-6 w-full">
+                            <!-- Image Placeholder -->
+                            <div
+                                class="w-24 h-32 bg-[var(--color-valen-light)] rounded border border-[var(--color-valen-border)] flex-shrink-0">
                             </div>
+
                             <div>
-                                <h3 class="text-lg font-bold text-white">{{ $submission->serviceLevel->name }}</h3>
-                                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">{{ $submission->created_at->format('M d, Y') }}</p>
+                                <h3 class="text-white font-bold text-lg">Charizard Base Set Holo</h3>
+                                <p class="text-gray-400 text-sm mb-4">Jungle • 1999</p>
+
+                                <button
+                                    class="bg-white text-black text-xs font-bold px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Reveal Grade
+                                </button>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-8">
-                            <div class="text-center hidden sm:block">
-                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Cards</span>
-                                <span class="font-bold">{{ $submission->card_entry_mode === 'detailed' ? $submission->cards->sum('qty') : $submission->total_cards }}</span>
-                            </div>
-                            <div class="text-center hidden sm:block">
-                                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Total</span>
-                                <span class="font-bold">€{{ number_format($submission->total_cost, 2) }}</span>
-                            </div>
-                            <div class="px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/5 border border-white/10"
-                                :class="{
-                                    'text-emerald-500 bg-emerald-500/10 border-emerald-500/20': '{{ $submission->status }}' == 'paid' || '{{ $submission->status }}' == 'completed',
-                                    'text-amber-500 bg-amber-500/10 border-amber-500/20': '{{ $submission->status }}' == 'shipped' || '{{ $submission->status }}' == 'at_grading'
-                                }">
-                                {{ str_replace('_', ' ', $submission->status) }}
-                            </div>
-                            
-                            @if($submission->status !== 'draft')
-                                <a href="{{ route('submission.packingSlip.download', $submission->id) }}" class="p-3 rounded-2xl bg-white/5 border border-white/10 text-gray-400 hover:text-red-500 hover:bg-white/10 transition-all group/btn" title="Download Packing Slip" @click.stop>
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 012-2H5a2 2 0 01-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                </a>
-                            @endif
-
-                            <svg class="w-6 h-6 text-gray-600 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <div class="flex gap-8 pr-4">
+                            <button
+                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
+                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span class="text-[10px] uppercase font-bold tracking-wider">View<br>Report</span>
+                            </button>
+                            <button
+                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
+                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                <span class="text-[10px] uppercase font-bold tracking-wider">Pop<br>Report</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Cards Content -->
-                    <div x-show="open" x-collapse>
-                        <div class="p-8 pt-4 border-t border-white/5 bg-white/[0.02]">
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @forelse($submission->cards as $card)
-                                <div class="glass p-6 rounded-3xl relative group {{ $card->is_revealed ? 'red-glow ring-1 ring-red-500/20' : '' }}">
-                                    <div class="mb-4">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <span class="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em]">{{ $card->status }}</span>
-                                            @if($card->is_revealed)
-                                                <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center font-bold text-lg shadow-lg">
-                                                    {{ explode(' ', $card->grade ?? '')[count(explode(' ', $card->grade ?? ''))-1] ?? '-' }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <h4 class="font-bold text-white group-hover:text-red-500 transition-colors">{{ $card->title }}</h4>
-                                        <p class="text-xs text-gray-500">{{ $card->year }} {{ $card->set_name }} #{{ $card->card_number }}</p>
-                                    </div>
-
-                                    @if($card->is_revealed)
-                                        <div class="space-y-4">
-                                            <div class="p-4 bg-black/40 rounded-2xl border border-white/5 space-y-2">
-                                                <p class="font-bold text-sm text-gray-400 uppercase tracking-widest text-center">{{ $card->grade }}</p>
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <div class="text-center font-bold text-[10px] text-gray-600 uppercase">C: {{ $card->centering ?: '-' }}</div>
-                                                    <div class="text-center font-bold text-[10px] text-gray-600 uppercase">K: {{ $card->corners ?: '-' }}</div>
-                                                    <div class="text-center font-bold text-[10px] text-gray-600 uppercase">E: {{ $card->edges ?: '-' }}</div>
-                                                    <div class="text-center font-bold text-[10px] text-gray-600 uppercase">S: {{ $card->surface ?: '-' }}</div>
-                                                </div>
-                                            </div>
-                                            <a href="{{ route('card.report', $card->cert_number) }}" target="_blank" class="block w-full text-center py-3 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg ring-1 ring-white/20">
-                                                View Grading Report
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="mt-4 p-4 bg-white/5 rounded-2xl border border-dashed border-white/10 text-center">
-                                            <svg class="w-6 h-6 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Result Locked</p>
-                                            <p class="text-[8px] text-gray-600 mt-1 uppercase">Pending Quality Control Reveal</p>
-                                        </div>
-                                    @endif
-                                </div>
-                                @empty
-                                    <div class="col-span-full py-12 text-center glass rounded-3xl border-dashed">
-                                        <p class="text-gray-500 italic text-sm">Processing card data...</p>
-                                    </div>
-                                @endforelse
+                    <!-- Card Item 2 -->
+                    <div
+                        class="bg-[var(--color-valen-dark)] border border-[var(--color-valen-border)] rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[var(--color-valen-border)]/80 transition-colors group">
+                        <div class="flex items-center gap-6 w-full">
+                            <div
+                                class="w-24 h-32 bg-[var(--color-valen-light)] rounded border border-[var(--color-valen-border)] flex-shrink-0">
                             </div>
+
+                            <div>
+                                <h3 class="text-white font-bold text-lg">Pikachu First Edition</h3>
+                                <p class="text-gray-400 text-sm mb-4">Jungle • 1999</p>
+
+                                <button
+                                    class="bg-white text-black text-xs font-bold px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-200 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Reveal Grade
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-8 pr-4">
+                            <button
+                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
+                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span class="text-[10px] uppercase font-bold tracking-wider">View<br>Report</span>
+                            </button>
+                            <button
+                                class="flex flex-col items-center gap-1 text-gray-500 hover:text-[var(--color-primary)] transition-colors group/btn">
+                                <svg class="w-5 h-5 text-[var(--color-primary)] opacity-70 group-hover/btn:opacity-100 transition-opacity"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                <span class="text-[10px] uppercase font-bold tracking-wider">Pop<br>Report</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-                @empty
-                <div class="glass p-12 rounded-[2rem] text-center border-dashed">
-                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 00-2 2H6a2 2 0 00-2 2v-5m16 0h-3.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-1.414-1.414A1 1 0 006.586 13H4"></path></svg>
-                    <p class="text-gray-500 text-lg mb-6">No submissions found yet.</p>
-                    <a href="{{ route('submission.step1') }}" class="inline-flex items-center gap-2 px-8 py-4 label-gradient rounded-2xl font-bold uppercase tracking-widest text-sm shadow-xl shadow-red-900/20 transition-transform hover:scale-105">
-                        Start Your First Submission
-                    </a>
-                </div>
-                @endforelse
             </div>
-        </main>
 
-        <!-- Footer Decorations -->
-        <div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-red-600/5 rounded-full blur-[120px] -z-10"></div>
+            <!-- ORDER STATUS TAB -->
+            <div x-show="activeTab === 'status'" class="p-8" style="display: none;">
+                <h2 class="text-xl font-bold text-white mb-8 text-center">My Order Status</h2>
+
+                <!-- Status Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Complete -->
+                    <div
+                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
+                        <div
+                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">Submission Complete</span>
+                    </div>
+                    <div
+                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
+                        <div
+                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">Cards Received</span>
+                    </div>
+                    <div
+                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
+                        <div
+                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">In Grading</span>
+                    </div>
+                    <div
+                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
+                        <div
+                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">Label Creation</span>
+                    </div>
+                    <div
+                        class="bg-[var(--color-valen-light)]/40 border border-green-900/50 rounded flex items-center p-3 gap-3">
+                        <div
+                            class="w-5 h-5 rounded-full border border-green-500 flex items-center justify-center text-green-500">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">Slabbed</span>
+                    </div>
+                    <!-- Current Status Red -->
+                    <div
+                        class="bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 rounded flex items-center p-3 gap-3 animate-pulse">
+                        <div
+                            class="w-5 h-5 rounded-full border border-[var(--color-primary)] flex items-center justify-center text-[var(--color-primary)]">
+                            <div class="w-2.5 h-2.5 bg-[var(--color-primary)] rounded-full"></div>
+                        </div>
+                        <span class="text-[var(--color-primary)] text-sm font-medium">Quality Control</span>
+                    </div>
+                </div>
+
+                <div class="bg-[var(--color-valen-dark)]/50 border border-[var(--color-valen-border)] rounded-lg p-6">
+                    <h3 class="text-white font-bold text-lg mb-1">Order #VG-12345</h3>
+                    <p class="text-gray-400 text-sm mb-6">Submitted on January 15, 2024</p>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-300">
+                        Current Status: <span class="text-[var(--color-primary)] font-bold uppercase">Quality Control</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MY PROFILE TAB -->
+            <div x-show="activeTab === 'profile'" class="p-8" style="display: none;">
+                <div class="grid grid-cols-1 gap-12 max-w-5xl mx-auto">
+                    <div class="bg-transparent">
+                        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-[var(--color-primary)] rounded-sm"></span>
+                            Personal Information
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <x-ui.valen-input label="First Name" name="first_name" placeholder="First Name" />
+                            <x-ui.valen-input label="Last Name" name="last_name" placeholder="Last Name" />
+                            <x-ui.valen-input label="Email Address" name="email" placeholder="email@example.com" />
+                            <x-ui.valen-input label="Phone Number" name="phone" placeholder="+1 (555) 000-0000" />
+                        </div>
+                        <div class="mt-6 text-right">
+                            <x-ui.valen-button>Save Personal Information</x-ui.valen-button>
+                        </div>
+                    </div>
+
+                    <div class="bg-transparent">
+                        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-[var(--color-primary)] rounded-sm"></span>
+                            Delivery Address
+                        </h3>
+                        <div class="space-y-6">
+                            <x-ui.valen-input label="Street Address" name="street" placeholder="Street Address" />
+                            <div class="grid grid-cols-3 gap-6">
+                                <x-ui.valen-input label="City" name="city" placeholder="City" />
+                                <x-ui.valen-input label="State" name="state" placeholder="State" />
+                                <x-ui.valen-input label="Zip Code" name="zip" placeholder="Zip Code" />
+                            </div>
+                            <x-ui.valen-input label="Country" name="country" placeholder="Country" />
+                        </div>
+                        <div class="mt-6 text-right">
+                            <x-ui.valen-button>Save Delivery Address</x-ui.valen-button>
+                        </div>
+                    </div>
+
+                    <div class="bg-transparent">
+                        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-[var(--color-primary)] rounded-sm"></span>
+                            Change Password
+                        </h3>
+                        <div class="gap-6 grid grid-cols-1 md:grid-cols-2">
+                            <x-ui.valen-input label="Current Password" type="password" name="current_password"
+                                placeholder="••••••••" />
+                            <x-ui.valen-input label="New Password" type="password" name="new_password"
+                                placeholder="••••••••" />
+                            <x-ui.valen-input label="Confirm New Password" type="password" name="confirm_password"
+                                placeholder="••••••••" />
+                        </div>
+                        <div class="mt-6 text-right">
+                            <x-ui.valen-button>Change Password</x-ui.valen-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-</body>
-</html>
+@endsection

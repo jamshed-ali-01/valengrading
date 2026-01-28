@@ -43,7 +43,17 @@ class CardSubmissionController extends Controller
             return redirect()->route('submission.step1');
         }
 
-        $levels = ServiceLevel::where('is_active', true)->orderBy('order')->get();
+        $submissionTypeId = session('submission_data.submission_type_id');
+        $levels = ServiceLevel::where('submission_type_id', $submissionTypeId)
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get();
+        
+        // Fallback: If no specific levels found for this type, maybe show all or handling default?
+        // For now, assuming admin configured it correctly. If empty, maybe show all where submission_type_id is null?
+        if ($levels->isEmpty()) {
+             $levels = ServiceLevel::whereNull('submission_type_id')->where('is_active', true)->orderBy('order')->get();
+        }
 
         return view('submission.step2', compact('levels'));
     }
@@ -471,5 +481,30 @@ class CardSubmissionController extends Controller
     public function paymentCancel()
     {
         return redirect()->route('submission.step6')->with('error', 'Payment was cancelled.');
+    }
+    public function resume($id)
+    {
+        $submission = Submission::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
+        // Security check: ensure user owns it
+        if ($submission->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Only allow resuming drafts
+        if ($submission->status !== 'draft') {
+            return redirect()->route('user.dashboard')->with('error', 'Cannot resume a submitted order.');
+        }
+
+        session(['pending_submission_id' => $submission->id]);
+        
+        // Re-populate basic session data if needed (optional, but good for consistency)
+        session(['submission_data' => [
+            'submission_name' => $submission->guest_name,
+            'submission_type_id' => $submission->submission_type_id,
+            'service_level_id' => $submission->service_level_id,
+        ]]);
+
+        return redirect()->route('submission.step4');
     }
 }

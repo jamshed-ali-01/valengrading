@@ -11,6 +11,7 @@ class ServiceLevel extends Model
     use HasFactory;
 
     protected $fillable = [
+        'submission_type_id',
         'name',
         'delivery_time',
         'min_submission',
@@ -42,5 +43,10 @@ class ServiceLevel extends Model
     public function getHasMinSubmissionAttribute(): bool
     {
         return $this->min_submission !== null;
+    }
+
+    public function submissionType()
+    {
+        return $this->belongsTo(SubmissionType::class);
     }
 }

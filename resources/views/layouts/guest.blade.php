@@ -14,17 +14,25 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased bg-[#15171A] min-h-screen">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-            <div class="mb-8">
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-red-500 hover:scale-105 transition-transform" />
-                </a>
-            </div>
+    <body class="bg-[var(--color-valen-dark)] font-sans antialiased text-[var(--color-text-main)] overflow-x-hidden" x-data="{ mobileMenuOpen: false }">
+        <div class="min-h-screen flex flex-col">
+            {{-- Header --}}
+            @include('partials.header')
 
-            <div class="w-full sm:max-w-md mt-6 px-8 py-10 bg-[#232528] shadow-2xl overflow-hidden sm:rounded-2xl border border-white/5">
-                {{ $slot }}
-            </div>
+            {{-- Main Content --}}
+            <main class="flex-grow flex items-center justify-center p-4">
+                <div class="w-full max-w-[480px]">
+                    {{-- Logo Removed (Handled in Header) --}}
+                    
+                    {{-- Card Consumer --}}
+                    <div class="w-full px-8 py-10 bg-[#15171a] border-2 border-gray-700 rounded-2xl shadow-xl overflow-hidden">
+                        {{ $slot }}
+                    </div>
+                </div>
+            </main>
+
+            {{-- Footer --}}
+            @include('partials.footer')
         </div>
     </body>
 </html>

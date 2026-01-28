@@ -75,9 +75,42 @@
                 </div>
 
                 <!-- Shipping Info -->
+                <div class="bg-[#15171A] p-6 rounded-xl border border-white/10">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Shipping Address
+                    </h3>
+                    @if($submission->shippingAddress)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-gray-500">Recipient</p>
+                                <p class="text-white font-medium">{{ $submission->shippingAddress->full_name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Address</p>
+                                <p class="text-white font-medium">
+                                    {{ $submission->shippingAddress->address_line_1 }}
+                                    @if($submission->shippingAddress->address_line_2)
+                                        <br>{{ $submission->shippingAddress->address_line_2 }}
+                                    @endif
+                                </p>
+                                <p class="text-white font-medium">
+                                    {{ $submission->shippingAddress->city }}, {{ $submission->shippingAddress->county }} {{ $submission->shippingAddress->post_code }}
+                                </p>
+                                <p class="text-white font-medium">{{ $submission->shippingAddress->country }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Contact</p>
+                                <p class="text-white font-medium">{{ $submission->shippingAddress->number ?? 'N/A' }}</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center gap-3">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                             <p class="text-red-500 font-medium">Shipping information is missing. Please go back and complete the shipping step.</p>
                         </div>
                     @endif
+                </div>
                 </div>
             </div>
 
@@ -227,5 +260,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+@endsection

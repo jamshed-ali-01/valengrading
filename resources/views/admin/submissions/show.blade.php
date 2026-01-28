@@ -21,7 +21,7 @@
             @method('PATCH')
             <label class="text-sm font-medium text-gray-400">Update Status:</label>
             <select name="status" class="bg-[#15171A] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-red-500 transition-colors">
-                @foreach(['draft', 'pending_payment', 'paid', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
+                @foreach(['draft', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
                     <option value="{{ $status }}" {{ $submission->status === $status ? 'selected' : '' }}>
                         {{ ucwords(str_replace('_', ' ', $status)) }}
                     </option>

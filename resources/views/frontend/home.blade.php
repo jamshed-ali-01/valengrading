@@ -21,7 +21,7 @@
                 Premium UK-based card grading <br> for collectors who demand excellence.
             </p>
             <div class="flex justify-center flex-col sm:flex-row gap-4 animate-slide-up" style="animation-delay: 0.2s;">
-                <a href="{{ route('multiform') }}"
+                <a href="{{ route('submission.step1') }}"
                     class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-base font-bold rounded-xl text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-all duration-300 shadow-[0_0_20px_rgba(163,5,10,0.4)] hover:shadow-[0_0_30px_rgba(163,5,10,0.6)] hover:-translate-y-1 uppercase tracking-wider">
                     Submit Cards Now
                 </a>
@@ -232,7 +232,7 @@
                 </div>
             </div>
             <div class="text-center mt-16">
-                <a href="{{ route('multiform') }}"
+                <a href="{{ route('submission.step1') }}"
                     class="inline-flex items-center px-8 py-3 bg-[var(--color-primary)] text-white text-sm font-bold rounded-xl hover:bg-[var(--color-primary-hover)] transition-all duration-300 shadow-lg">
                     Start Submission
                 </a>

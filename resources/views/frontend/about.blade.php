@@ -182,7 +182,7 @@
 
             <!-- CTA Section -->
             <div class="text-center animate-fade-in pb-12">
-                <a href="{{ route('multiform') }}"
+                <a href="{{ route('submission.step1') }}"
                     class="inline-block px-12 py-4 text-base font-bold rounded-xl text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors shadow-lg uppercase tracking-wide">
                     Submit Cards Now
                 </a>

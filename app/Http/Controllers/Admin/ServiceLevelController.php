@@ -19,12 +19,14 @@ class ServiceLevelController extends Controller
 
     public function create(): View
     {
-        return view('admin.service-levels.create');
+        $submissionTypes = \App\Models\SubmissionType::where('is_active', true)->orderBy('order')->get();
+        return view('admin.service-levels.create', compact('submissionTypes'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'submission_type_id' => 'required|exists:submission_types,id',
             'name' => 'required|string|max:255',
             'delivery_time' => 'required|string|max:255',
             'min_submission' => 'nullable|integer|min:0',
@@ -45,12 +47,14 @@ class ServiceLevelController extends Controller
 
     public function edit(ServiceLevel $serviceLevel): View
     {
-        return view('admin.service-levels.edit', compact('serviceLevel'));
+        $submissionTypes = \App\Models\SubmissionType::where('is_active', true)->orderBy('order')->get();
+        return view('admin.service-levels.edit', compact('serviceLevel', 'submissionTypes'));
     }
 
     public function update(Request $request, ServiceLevel $serviceLevel): RedirectResponse
     {
         $validated = $request->validate([
+            'submission_type_id' => 'required|exists:submission_types,id',
             'name' => 'required|string|max:255',
             'delivery_time' => 'required|string|max:255',
             'min_submission' => 'nullable|integer|min:0',

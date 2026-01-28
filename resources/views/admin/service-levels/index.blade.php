@@ -30,6 +30,7 @@
                 <thead class="bg-white/5 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
                     <tr>
                         <th class="px-6 py-4">Order</th>
+                        <th class="px-6 py-4">Parent Service</th>
                         <th class="px-6 py-4">Name</th>
                         <th class="px-6 py-4 text-center">Delivery</th>
                         <th class="px-6 py-4 text-center">Min Cards</th>
@@ -43,6 +44,15 @@
                         <tr class="hover:bg-white/[0.02] transition-colors group" 
                             x-show="search === '' || '{{ strtolower($level->name) }}'.includes(search.toLowerCase())">
                             <td class="px-6 py-4 text-gray-500 font-mono">{{ $level->order }}</td>
+                            <td class="px-6 py-4">
+                                @if($level->submissionType)
+                                    <span class="px-2 py-1 rounded bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20">
+                                        {{ $level->submissionType->name }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-600 text-xs italic">Global</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 font-bold text-white">{{ $level->name }}</td>
                             <td class="px-6 py-4 text-center text-gray-300">{{ $level->delivery_time }}</td>
                             <td class="px-6 py-4 text-center text-gray-300">

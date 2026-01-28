@@ -15,6 +15,19 @@
                     placeholder="e.g., Express, Standard" required>
                 @error('name')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
+
+            <div class="space-y-2">
+                <label for="submission_type_id" class="text-sm font-medium text-gray-400">Submission Type (Parent)*</label>
+                <select id="submission_type_id" name="submission_type_id" required class="w-full bg-[#15171A] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors appearance-none">
+                    <option value="">Select Parent Service</option>
+                    @foreach($submissionTypes as $type)
+                        <option value="{{ $type->id }}" {{ old('submission_type_id') == $type->id ? 'selected' : '' }}>
+                            {{ $type->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('submission_type_id')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+            </div>
             
             <div class="space-y-2">
                 <label for="delivery_time" class="text-sm font-medium text-gray-400">Delivery Time*</label>

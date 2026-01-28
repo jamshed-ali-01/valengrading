@@ -11,9 +11,7 @@ Route::get('/', function () {
     return view('frontend.home', compact('showcaseCards'));
 })->name('home');
 
-Route::get('/multiform', function () {
-    return view('frontend.multiform.index');
-})->name('multiform');
+
 
 Route::get('/faq', function () {
     return view('frontend.faq');
@@ -35,6 +33,9 @@ Route::get('/about', function () {
 // User Routes (New)
 Route::prefix('user')->name('user.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\UserDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/profile/update-info', [\App\Http\Controllers\UserDashboardController::class, 'updateInfo'])->name('profile.update-info');
+    Route::post('/profile/update-address', [\App\Http\Controllers\UserDashboardController::class, 'updateAddress'])->name('profile.update-address');
+    Route::post('/profile/update-password', [\App\Http\Controllers\UserDashboardController::class, 'updatePassword'])->name('profile.update-password');
 });
 
 // Admin Routes (Preserved)
@@ -87,6 +88,7 @@ Route::group(['prefix' => 'submission', 'as' => 'submission.'], function () {
     Route::get('/payment/success', [CardSubmissionController::class, 'paymentSuccess'])->name('success');
     Route::get('/payment/cancel', [CardSubmissionController::class, 'paymentCancel'])->name('cancel');
     Route::get('/packing-slip/{id}', [CardSubmissionController::class, 'downloadPackingSlip'])->name('packingSlip.download');
+    Route::get('/resume/{id}', [CardSubmissionController::class, 'resume'])->name('resume');
 });
 
 // Public Card Validation/Report

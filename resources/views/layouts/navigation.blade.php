@@ -11,11 +11,11 @@
                 </div>
 
                 <!-- Navigation Links -->
-                {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="url('/dashboard')" :active="request()->is('dashboard')" class="text-white hover:text-red-500">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" class="text-white hover:text-red-500">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                </div> --}}
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

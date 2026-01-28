@@ -46,27 +46,24 @@
         <div class="flex w-[200%] animate-marquee">
             <!-- First set of cards -->
             <div class="flex justify-around w-1/2 px-4 gap-8">
-                @foreach([1, 2, 3, 4, 5, 6] as $i)
+                @foreach($showcaseCards as $card)
                     <div
                         class="flex-shrink-0 w-48 h-72 bg-[var(--color-valen-light)] rounded-lg border-2 border-[#333] relative group shadow-2xl skew-x-[-2deg] transform transition-transform hover:scale-110 hover:z-20 hover:border-[var(--color-primary)]">
                         <div
                             class="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-xs border border-white/20 shadow-lg">
-                            10</div>
+                            {{ $card->grade }}</div>
                         <div class="absolute inset-2 bg-[#1a1d21] rounded flex items-center justify-center overflow-hidden"> 
-                          <img src="{{asset('images') }}/card{{ $i+1 }}.jpg" alt="">
+                          <img src="{{ asset($card->image_path) }}" class="h-full w-full object-cover" alt="{{ $card->title }}">
                              
                         </div>
                         
                     </div>
                 @endforeach
-                @foreach([1, 2, 3, 4, 5, 6] as $i)
+                @foreach($showcaseCards as $card)
                     <div
                         class="flex-shrink-0 w-48 h-72 bg-[var(--color-valen-light)] rounded-lg border-2 border-[#333] relative group shadow-2xl skew-x-[-2deg] transform transition-transform hover:scale-110 hover:z-20 hover:border-[var(--color-primary)]">
-                        <div
-                            class="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-xs border border-white/20 shadow-lg">
-                            10</div>
                         <div class="absolute inset-2 bg-[#1a1d21] rounded flex items-center justify-center overflow-hidden">
-                          <img src="{{asset('images') }}/card{{ $i+1 }}.jpg" alt="">
+                          <img src="{{ asset($card->image_path) }}" class="h-full w-full object-cover" alt="{{ $card->title }}">
                              
                         </div>
                         

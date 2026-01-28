@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CardSubmissionController;
+use App\Models\ShowcaseCard;
 use Illuminate\Support\Facades\Route;
 
 // New Frontend Routes
 Route::get('/', function () {
-    return view('frontend.home');
+    $showcaseCards = \App\Models\ShowcaseCard::where('is_active', true)->orderBy('order')->get();
+    return view('frontend.home', compact('showcaseCards'));
 })->name('home');
 
 Route::get('/multiform', function () {
@@ -44,6 +46,7 @@ Route::get('/admin/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('population', \App\Http\Controllers\Admin\PopulationReportController::class);
+    Route::resource('showcase', \App\Http\Controllers\Admin\ShowcaseCardController::class);
     Route::get('/submissions', [\App\Http\Controllers\Admin\SubmissionController::class, 'index'])->name('submissions.index');
     Route::get('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'show'])->name('submissions.show');
     Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.updateStatus');

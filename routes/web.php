@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/submissions/cards/{card}/edit', [\App\Http\Controllers\Admin\SubmissionController::class, 'editCard'])->name('submissions.cards.edit');
     Route::patch('/submissions/cards/{card}', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateCard'])->name('submissions.cards.update');
     Route::post('/submissions/{submission}/cards', [\App\Http\Controllers\Admin\SubmissionController::class, 'storeCard'])->name('submissions.cards.store');
+    Route::resource('newsletter', \App\Http\Controllers\Admin\NewsletterController::class)->only(['index', 'destroy']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -99,3 +100,5 @@ Route::post('/cert-check/search', [\App\Http\Controllers\CardReportController::c
 Route::get('/card/{cert_number}', [\App\Http\Controllers\CardReportController::class, 'show'])->name('card.report');
 Route::get('/pop-report', [\App\Http\Controllers\PopulationReportController::class, 'index'])->name('pop-report');
 
+
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');

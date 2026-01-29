@@ -11,7 +11,7 @@
 <body class="bg-[#15171A] text-white font-['Outfit'] antialiased">
     <div class="flex h-screen w-full overflow-hidden">
         <!-- Sidebar -->
-        <aside class="w-64 bg-[#232528] border-r border-white/5 flex-shrink-0 flex flex-col hidden md:flex">
+        <aside id="admin-sidebar" class="w-64 bg-[#232528] border-r border-white/5 flex-shrink-0 flex flex-col hidden md:flex">
             <div class="p-6 flex items-center gap-3">
                 <div class="size-10 bg-[#A3050A] rounded-xl flex items-center justify-center p-2 shadow-[0_0_20px_rgba(163,5,10,0.4)] flex-shrink-0">
                     <img src="{{ asset('images/logo.avif') }}" class="h-full w-full object-contain" alt="Logo">
@@ -62,6 +62,11 @@
                 <a href="{{ route('admin.contact-queries.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('admin.contact-queries.*') ? 'bg-gradient-to-r from-[#A3050A] to-red-700 text-white shadow-lg shadow-red-900/20' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     <span class="font-medium">Contact Messages</span>
+                </a>
+
+                <a href="{{ route('admin.newsletter.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('admin.newsletter.*') ? 'bg-gradient-to-r from-[#A3050A] to-red-700 text-white shadow-lg shadow-red-900/20' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                    <span class="font-medium">Newsletter</span>
                 </a>
             </nav>
         </aside>
@@ -197,6 +202,49 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        /* Custom Scrollbar - Global (Main Panel) */
+        ::-webkit-scrollbar {
+            width: 8px; /* Slightly wider for main content ease of use */
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #232528;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A3050A;
+            border-color: #A3050A;
+        }
+
+        /* Sidebar Specific Scrollbar - Super Thin & Subtle */
+        #admin-sidebar *::-webkit-scrollbar,
+        #admin-sidebar::-webkit-scrollbar {
+            width: 2px; /* Very thin */
+        }
+
+        #admin-sidebar *::-webkit-scrollbar-track,
+        #admin-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #admin-sidebar *::-webkit-scrollbar-thumb,
+        #admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(163, 5, 10, 0.3); /* Subtle dim red */
+        }
+
+        #admin-sidebar:hover *::-webkit-scrollbar-thumb,
+        #admin-sidebar:hover::-webkit-scrollbar-thumb {
+            background: #A3050A; /* Bright red on hover */
         }
     </style>
 

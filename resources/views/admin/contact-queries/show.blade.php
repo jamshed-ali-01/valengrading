@@ -3,7 +3,7 @@
 @section('title', 'View Query')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="w-full space-y-6">
     <!-- Header -->
     <div class="flex items-center justify-between">
         <h1 class="text-3xl font-bold text-white">Message Details</h1>

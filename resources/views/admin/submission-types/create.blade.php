@@ -3,7 +3,7 @@
 @section('title', 'Add New Submission Type')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
+<div class="w-full">
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-8 shadow-2xl">
         <form method="POST" action="{{ route('admin.submission-types.store') }}" class="space-y-6">
             @csrf

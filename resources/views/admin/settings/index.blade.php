@@ -3,7 +3,7 @@
 @section('title', 'Admin Settings')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="w-full space-y-6">
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-white">System Settings</h2>
         <p class="text-gray-400">Manage your profile, security, and global application configurations.</p>

@@ -3,7 +3,7 @@
 @section('title', 'Edit Showcase Card')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
+<div class="w-full">
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <h3 class="text-lg font-bold text-white">Edit Card #{{ $showcase->order }}</h3>

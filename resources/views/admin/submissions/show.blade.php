@@ -3,7 +3,7 @@
 @section('title', 'Submission Details: ' . $submission->submission_no)
 
 @section('content')
-<div class="space-y-6 max-w-5xl mx-auto">
+<div class="space-y-6 w-full">
     <!-- Header with Status Update -->
     <div class="bg-[#232528]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-wrap items-center justify-between gap-6">
         <div class="flex items-center gap-4">

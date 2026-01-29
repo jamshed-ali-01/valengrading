@@ -3,7 +3,7 @@
 @section('title', 'Edit Card: ' . $card->title)
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="w-full space-y-6">
     <div class="flex items-center justify-between">
         <a href="{{ route('admin.submissions.show', $card->submission_id) }}" class="text-gray-400 hover:text-white flex items-center gap-2 transition-colors group">
             <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>

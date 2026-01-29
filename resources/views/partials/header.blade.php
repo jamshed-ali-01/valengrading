@@ -67,7 +67,7 @@
                             </a>
                         @endauth
 
-                        <a href="{{ route('multiform') }}"
+                        <a href="{{ route('submission.step1') }}"
                             class="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-[0_4px_14px_0_rgba(163,5,10,0.3)] uppercase tracking-wide">
                             Submit Cards
                         </a>

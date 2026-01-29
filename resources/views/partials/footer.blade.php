@@ -26,7 +26,7 @@
                             <li><a href="{{ route('pricing') }}"
                                     class="text-xs text-gray-500 hover:text-white transition-colors">Service Levels</a>
                             </li>
-                            <li><a href="{{ route('multiform') }}"
+                            <li><a href="{{ route('submission.step1') }}"
                                     class="text-xs text-gray-500 hover:text-white transition-colors">Submit Cards</a>
                             </li>
                         </ul>
@@ -59,9 +59,9 @@
                     class="mt-16 pt-8 border-t border-[var(--color-valen-border)] flex flex-col md:flex-row justify-between items-center gap-4">
                     <p class="text-xs text-gray-600">© {{ date('Y') }} Valen Grading. All rights reserved.</p>
                     <div class="flex gap-8">
-                        <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Privacy Policy</a>
+                        <!-- <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Privacy Policy</a>
                         <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Terms of
-                            Service</a>
+                            Service</a> -->
                     </div>
                 </div>
             </div>

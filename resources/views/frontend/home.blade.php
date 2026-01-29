@@ -340,94 +340,23 @@
             </div>
 
             <div class="space-y-4" x-data="{ active: null }">
-                <!-- FAQ 1 -->
+                @foreach($faqs as $faq)
                 <div class="bg-[#1C1E21] rounded-lg border border-[var(--color-valen-border)] overflow-hidden">
-                    <button @click="active = (active === 1 ? null : 1)"
+                    <button @click="active = (active === {{ $faq->id }} ? null : {{ $faq->id }})"
                         class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none hover:bg-[var(--color-valen-dark)] transition-colors">
-                        <span class="text-sm font-bold text-white">What are your grading fees?</span>
+                        <span class="text-sm font-bold text-white">{{ $faq->question }}</span>
                         <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
-                            :class="{'rotate-180': active === 1}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            :class="{'rotate-180': active === {{ $faq->id }}}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="active === 1" x-collapse style="display: none;">
+                    <div x-show="active === {{ $faq->id }}" x-collapse style="display: none;">
                         <div class="px-6 pb-5 text-sm text-gray-400 leading-relaxed border-t border-gray-800 pt-4">
-                            Our grading fees vary depending on the service level and turnaround time you choose. Please
-                            visit our Pricing page for the most up-to-date information.
+                            {{ $faq->answer }}
                         </div>
                     </div>
                 </div>
-
-                <!-- FAQ 2 -->
-                <div class="bg-[#1C1E21] rounded-lg border border-[var(--color-valen-border)] overflow-hidden">
-                    <button @click="active = (active === 2 ? null : 2)"
-                        class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none hover:bg-[var(--color-valen-dark)] transition-colors">
-                        <span class="text-sm font-bold text-white">What cards do you grade?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
-                            :class="{'rotate-180': active === 2}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div x-show="active === 2" x-collapse style="display: none;">
-                        <div class="px-6 pb-5 text-sm text-gray-400 leading-relaxed border-t border-gray-800 pt-4">
-                            We currently grade most standard trading cards, including sports cards (Baseball, Basketball,
-                            Football, Soccer, etc.) and TCG cards (Pokémon, Magic: The Gathering, Yu-Gi-Oh!, etc.).
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ 3 -->
-                <div class="bg-[#1C1E21] rounded-lg border border-[var(--color-valen-border)] overflow-hidden">
-                    <button @click="active = (active === 3 ? null : 3)"
-                        class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none hover:bg-[var(--color-valen-dark)] transition-colors">
-                        <span class="text-sm font-bold text-white">How does the grading scale work?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
-                            :class="{'rotate-180': active === 3}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div x-show="active === 3" x-collapse style="display: none;">
-                        <div class="px-6 pb-5 text-sm text-gray-400 leading-relaxed border-t border-gray-800 pt-4">
-                            We use a standard 1-10 grading scale, with 10 being Gem Mint. Our grading standards are rigorous
-                            and consistent with industry leaders.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ 4 -->
-                <div class="bg-[#1C1E21] rounded-lg border border-[var(--color-valen-border)] overflow-hidden">
-                    <button @click="active = (active === 4 ? null : 4)"
-                        class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none hover:bg-[var(--color-valen-dark)] transition-colors">
-                        <span class="text-sm font-bold text-white">Are my cards insured being graded?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
-                            :class="{'rotate-180': active === 4}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div x-show="active === 4" x-collapse style="display: none;">
-                        <div class="px-6 pb-5 text-sm text-gray-400 leading-relaxed border-t border-gray-800 pt-4">
-                            Yes, all submissions are fully insured while in our possession and during return shipping, based
-                            on the declared value of your items.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ 5 -->
-                <div class="bg-[#1C1E21] rounded-lg border border-[var(--color-valen-border)] overflow-hidden">
-                    <button @click="active = (active === 5 ? null : 5)"
-                        class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none hover:bg-[var(--color-valen-dark)] transition-colors">
-                        <span class="text-sm font-bold text-white">Can I track my submission?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
-                            :class="{'rotate-180': active === 5}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div x-show="active === 5" x-collapse style="display: none;">
-                        <div class="px-6 pb-5 text-sm text-gray-400 leading-relaxed border-t border-gray-800 pt-4">
-                            Absolutely. You can track the real-time status of your submission through your dashboard at any
-                            time.
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

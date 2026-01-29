@@ -55,6 +55,9 @@ Route::prefix('admin')
         Route::get('/notifications', [DashboardController::class, 'notifications'])->name('notifications.index');
         Route::post('/notifications/mark-all-read', [DashboardController::class, 'markAllRead'])->name('notifications.mark-all-read');
 
+        // FAQs
+        Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
+
         Route::post('/logout', function () {
             Auth::logout();
             request()->session()->invalidate();
@@ -62,4 +65,6 @@ Route::prefix('admin')
 
             return redirect('/login');
         })->name('logout');
+        // User Management
+        Route::resource('/users', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
     });

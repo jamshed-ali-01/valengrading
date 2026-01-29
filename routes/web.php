@@ -8,13 +8,18 @@ use Illuminate\Support\Facades\Route;
 // New Frontend Routes
 Route::get('/', function () {
     $showcaseCards = \App\Models\ShowcaseCard::where('is_active', true)->orderBy('order')->get();
-    return view('frontend.home', compact('showcaseCards'));
+    $faqs = \App\Models\Faq::where('is_active', true)->where('show_on_home', true)->orderBy('order')->take(5)->get();
+    return view('frontend.home', compact('showcaseCards', 'faqs'));
 })->name('home');
 
 
 
 Route::get('/faq', function () {
-    return view('frontend.faq');
+    $faqs = \App\Models\Faq::where('is_active', true)
+        ->orderBy('category')
+        ->orderBy('order')
+        ->get();
+    return view('frontend.faq', compact('faqs'));
 })->name('faq');
 
 

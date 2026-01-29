@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/nexzrpfa/repositories/valengrading.nexztech.com
+    - /bin/cp -R * $DEPLOYPATH

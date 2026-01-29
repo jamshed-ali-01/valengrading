@@ -149,7 +149,7 @@
                     </div>
                 </div>
 
-                <a href="{{ route('multiform') }}"
+                <a href="{{ route('submission.step1') }}"
                     class="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white px-8 py-3 rounded text-sm font-semibold transition-all shadow-[0_0_20px_rgba(163,5,10,0.4)] hover:shadow-[0_0_30px_rgba(163,5,10,0.6)]">
                     Submit New Cards
                 </a>
@@ -350,7 +350,7 @@
                     @empty
                         <div class="text-center py-12 text-gray-400 border border-dashed border-gray-700 rounded-xl">
                             <p class="mb-4">No active orders found.</p>
-                            <a href="{{ route('multiform') }}" class="text-[var(--color-primary)] hover:underline">Start a new submission</a>
+                            <a href="{{ route('submission.step1') }}" class="text-[var(--color-primary)] hover:underline">Start a new submission</a>
                         </div>
                     @endforelse
                 </div>

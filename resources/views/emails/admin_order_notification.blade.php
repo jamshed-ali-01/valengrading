@@ -106,7 +106,7 @@
                                 </td>
                                 <td style="text-align: center; padding: 12px 0; border-bottom: 1px solid #e5e7eb; font-weight: bold; color: #A3050A;">{{ $submission->total_cards }}</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
 

@@ -52,7 +52,7 @@ class NewContactQuery extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'submission_id' => $this->contactQuery->id, // Using same key structure as existing notifications if possible, or new one
+            'form_id' => $this->contactQuery->id,
             'message' => 'New contact message from ' . ($this->contactQuery->name ?? 'Guest'),
             'type' => 'contact_query',
         ];

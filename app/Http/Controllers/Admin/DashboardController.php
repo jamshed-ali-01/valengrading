@@ -113,6 +113,12 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact('stats'));
     }
 
+    public function notifications()
+    {
+        $notifications = auth()->user()->notifications()->paginate(20);
+        return view('admin.notifications.index', compact('notifications'));
+    }
+
     public function markAllRead()
     {
         auth()->user()->unreadNotifications->markAsRead();

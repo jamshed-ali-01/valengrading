@@ -52,6 +52,7 @@ Route::prefix('admin')
         Route::delete('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'destroy'])->name('submissions.destroy');
 
         // Notifications
+        Route::get('/notifications', [DashboardController::class, 'notifications'])->name('notifications.index');
         Route::post('/notifications/mark-all-read', [DashboardController::class, 'markAllRead'])->name('notifications.mark-all-read');
 
         Route::post('/logout', function () {

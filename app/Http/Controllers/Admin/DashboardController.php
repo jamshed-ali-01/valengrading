@@ -21,11 +21,11 @@ class DashboardController extends Controller
             'received_submissions' => Submission::where('status', '!=', 'draft')->count(),
             'draft_submissions' => Submission::where('status', 'draft')->count(),
             'pending_payments' => Submission::where('status', 'pending_payment')->count(),
-            'paid_submissions' => Submission::where('status', 'paid')->orWhere('status', 'processing')->orWhere('status', 'completed')->count(),
+            'paid_submissions' => Submission::where('status', 'order_received')->orWhere('status', 'processing')->orWhere('status', 'completed')->count(),
             'recent_submissions' => Submission::with(['user', 'serviceLevel', 'cards', 'labelType'])
                 ->latest()
                 ->paginate(10, ['*'], 'recent_page'),
-            'total_cards' => Submission::whereIn('status', ['paid', 'processing', 'completed'])
+            'total_cards' => Submission::whereIn('status', ['order_received', 'processing', 'completed'])
                 ->sum('total_cards'),
         ];
 
@@ -42,7 +42,7 @@ class DashboardController extends Controller
                 DB::raw('SUM(total_cards * service_levels.price_per_card) as revenue')
             )
             ->join('service_levels', 'submissions.service_level_id', '=', 'service_levels.id')
-            ->whereIn('submissions.status', ['paid', 'processing', 'completed'])
+            ->whereIn('submissions.status', ['order_received', 'processing', 'completed'])
             ->whereBetween('submissions.created_at', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date', 'ASC')
@@ -75,7 +75,7 @@ class DashboardController extends Controller
                 DB::raw('SUM(total_cards * service_levels.price_per_card) as revenue')
             )
             ->join('service_levels', 'submissions.service_level_id', '=', 'service_levels.id')
-            ->whereIn('submissions.status', ['paid', 'processing', 'completed'])
+            ->whereIn('submissions.status', ['order_received', 'processing', 'completed'])
             ->whereBetween('submissions.created_at', [$startDate, $endDate])
             ->groupBy('year', 'month')
             ->orderBy('year', 'ASC')

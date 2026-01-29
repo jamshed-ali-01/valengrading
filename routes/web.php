@@ -21,6 +21,7 @@ Route::get('/faq', function () {
 Route::get('/contact', function () {
     return view('frontend.contact');
 })->name('contact');
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/pricing', function () {
     return view('frontend.pricing');
@@ -46,6 +47,7 @@ Route::get('/admin/dashboard', function () {
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('population', \App\Http\Controllers\Admin\PopulationReportController::class);
     Route::resource('showcase', \App\Http\Controllers\Admin\ShowcaseCardController::class);
+    Route::resource('contact-queries', \App\Http\Controllers\Admin\ContactQueryController::class)->only(['index', 'show', 'destroy']);
     Route::get('/submissions', [\App\Http\Controllers\Admin\SubmissionController::class, 'index'])->name('submissions.index');
     Route::get('/submissions/{submission}', [\App\Http\Controllers\Admin\SubmissionController::class, 'show'])->name('submissions.show');
     Route::patch('/submissions/{submission}/status', [\App\Http\Controllers\Admin\SubmissionController::class, 'updateStatus'])->name('submissions.updateStatus');

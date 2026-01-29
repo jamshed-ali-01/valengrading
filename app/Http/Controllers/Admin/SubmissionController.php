@@ -26,7 +26,7 @@ class SubmissionController extends Controller
     public function updateStatus(Request $request, Submission $submission)
     {
         $request->validate([
-            'status' => 'required|in:draft,pending_payment,paid,processing,shipped,completed,cancelled',
+            'status' => 'required|in:draft,pending_payment,order_received,processing,shipped,completed,cancelled',
         ]);
 
         $submission->update(['status' => $request->status]);

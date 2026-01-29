@@ -9,14 +9,14 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-[#15171A] text-white font-['Outfit'] antialiased">
-    <div class="flex min-h-screen overflow-hidden">
+    <div class="flex h-screen w-full overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-[#232528] border-r border-white/5 flex-shrink-0 flex flex-col hidden md:flex">
             <div class="p-6 flex items-center gap-3">
-                @if($logo = \App\Models\SiteSetting::get('site_logo'))
-                    <img src="{{ $logo }}" class="h-8 w-auto object-contain" alt="Logo">
-                @endif
-                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-[#A3050A]">
+                <div class="size-10 bg-[#A3050A] rounded-xl flex items-center justify-center p-2 shadow-[0_0_20px_rgba(163,5,10,0.4)] flex-shrink-0">
+                    <img src="{{ asset('images/logo.avif') }}" class="h-full w-full object-contain" alt="Logo">
+                </div>
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-[#A3050A] truncate">
                     {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}
                 </h1>
             </div>
@@ -58,13 +58,18 @@
                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     <span class="font-medium">Showcase Cards</span>
                 </a>
+
+                <a href="{{ route('admin.contact-queries.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('admin.contact-queries.*') ? 'bg-gradient-to-r from-[#A3050A] to-red-700 text-white shadow-lg shadow-red-900/20' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <span class="font-medium">Contact Messages</span>
+                </a>
             </nav>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto relative bg-[#15171A]">
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 flex flex-col min-w-0 bg-[#15171A] relative">
             <!-- Top Header -->
-            <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 sticky top-0 bg-[#15171A]/80 backdrop-blur-xl z-20">
+            <header class="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-[#15171A]/80 backdrop-blur-xl z-20 flex-shrink-0">
                 <h2 class="text-lg font-semibold text-white">@yield('title', 'Admin Panel')</h2>
                 <div class="flex items-center gap-6">
                     <!-- Notifications -->
@@ -133,15 +138,8 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
-            <div class="p-8">
-                @if(session('success'))
-                    <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium flex items-center gap-3">
-                        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        {{ session('success') }}
-                    </div>
-                @endif
-
+            <!-- Scrollable Page Content -->
+            <main class="flex-1 overflow-y-auto p-8 relative">
                 @if(session('error'))
                     <div class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-3">
                         <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -150,12 +148,12 @@
                 @endif
 
                 @yield('content')
-            </div>
 
-            <!-- Background Decorations -->
-            <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] -z-10"></div>
-            <div class="fixed bottom-0 left-64 w-[500px] h-[500px] bg-red-900/5 rounded-full blur-[120px] -z-10"></div>
-        </main>
+                <!-- Background Decorations -->
+                <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+                <div class="fixed bottom-0 left-64 w-[500px] h-[500px] bg-red-900/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+            </main>
+        </div>
     </div>    <!-- Real-time Notification Toast -->
     <div id="notification-toast" class="fixed top-24 right-8 bg-[#232528] border border-l-4 border-emerald-500 text-white px-6 py-4 rounded-lg shadow-2xl z-50 transform transition-all duration-300 translate-x-full opacity-0 flex items-center gap-4">
         <div class="bg-emerald-500/20 p-2 rounded-full text-emerald-500">
@@ -231,65 +229,87 @@
         // Wait for Echo to be initialized
         setTimeout(() => {
             if (window.Echo) {
-                window.Echo.channel('admin-notifications')
-                    .listen('NewSubmissionEvent', (e) => {
-                        console.log('New Submission Event:', e);
-                        
-                        // 1. Play sound
-                        try {
-                            const audio = document.getElementById('notification-sound');
-                            audio.currentTime = 0;
-                            audio.play().catch(err => console.log('Audio play failed:', err));
-                        } catch (err) {
-                            console.log('Audio error', err);
-                        }
+                const channel = window.Echo.channel('admin-notifications');
 
-                        // 2. Trigger Browser Push Notification
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification('New Order: ' + e.submission_no, {
-                                body: e.user_name + ' submitted ' + e.amount + ' cards',
-                                icon: '/favicon.ico' // Ensure you have a favicon or use a generic icon URL
-                            });
-                        }
-
-                        // 3. Update Badge Count
-                        const badge = document.getElementById('notification-count');
-                        if (badge) {
-                            let count = parseInt(badge.innerText) || 0;
-                            badge.innerText = count + 1;
-                            badge.classList.remove('hidden');
-                        }
-
-                        // 4. Update Notification List
-                        const list = document.getElementById('notification-list');
-                        const emptyMsg = document.getElementById('no-notifications-msg');
-                        if (list) {
-                            if (emptyMsg) emptyMsg.remove();
-                            
-                            const newNotification = `
-                                <a href="/admin/submissions/${e.id}" class="block px-4 py-3 hover:bg-white/5 border-b border-white/5 transition-colors animate-pulse">
-                                    <p class="text-xs text-white font-medium mb-1">${e.message}</p>
-                                    <p class="text-[10px] text-gray-500">Just now</p>
-                                </a>
-                            `;
-                            list.insertAdjacentHTML('afterbegin', newNotification);
-                        }
-
-                        // 5. Update Toast
-                        document.getElementById('toast-title').innerText = 'New Order: ' + e.submission_no;
-                        document.getElementById('toast-message').innerText = e.user_name + ' submitted ' + e.amount + ' cards';
-                        
-                        const toast = document.getElementById('notification-toast');
-                        toast.classList.remove('translate-x-full', 'opacity-0');
-                        
-                        setTimeout(() => {
-                            toast.classList.add('translate-x-full', 'opacity-0');
-                        }, 8000);
+                // Listener for New Submissions
+                channel.listen('NewSubmissionEvent', (e) => {
+                    handleNotification({
+                        title: 'New Order: ' + e.submission_no,
+                        body: e.user_name + ' submitted ' + e.amount + ' cards',
+                        link: '/admin/submissions/' + e.id,
+                        message: e.message
                     });
+                });
+
+                // Listener for New Contact Queries
+                channel.listen('NewContactQueryEvent', (e) => {
+                    handleNotification({
+                        title: 'New Contact Message',
+                        body: e.message, // Use the matched message from event
+                        link: '/admin/contact-queries/' + e.id,
+                        message: e.message
+                    });
+                });
+
             } else {
                 console.error('Echo not initialized');
             }
         }, 1000);
+
+        function handleNotification(data) {
+             // 1. Play sound
+             try {
+                const audio = document.getElementById('notification-sound');
+                audio.currentTime = 0;
+                audio.play().catch(err => console.log('Audio play failed:', err));
+            } catch (err) {
+                console.log('Audio error', err);
+            }
+
+            // 2. Browser Notification (Disabled to prevent duplicate feel with toast)
+            /*
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(data.title, {
+                    body: data.body,
+                    icon: '/favicon.ico'
+                });
+            }
+            */
+
+            // 3. Update Badge
+            const badge = document.getElementById('notification-count');
+            if (badge) {
+                let count = parseInt(badge.innerText) || 0;
+                badge.innerText = count + 1;
+                badge.classList.remove('hidden');
+            }
+
+            // 4. Update List
+            const list = document.getElementById('notification-list');
+            const emptyMsg = document.getElementById('no-notifications-msg');
+            if (list) {
+                if (emptyMsg) emptyMsg.remove();
+                
+                const newNotification = `
+                    <a href="${data.link}" class="block px-4 py-3 hover:bg-white/5 border-b border-white/5 transition-colors animate-pulse">
+                        <p class="text-xs text-white font-medium mb-1">${data.message}</p>
+                        <p class="text-[10px] text-gray-500">Just now</p>
+                    </a>
+                `;
+                list.insertAdjacentHTML('afterbegin', newNotification);
+            }
+
+            // 5. Update Toast
+            document.getElementById('toast-title').innerText = data.title;
+            document.getElementById('toast-message').innerText = data.body;
+            
+            const toast = document.getElementById('notification-toast');
+            toast.classList.remove('translate-x-full', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+            }, 8000);
+        }
     </script>
 </body>
 </html>

@@ -29,6 +29,10 @@
         border: 1px solid var(--color-valen-border);
         color: white;
     }
+    
+    button, .btn, [type='button'], [type='submit'] {
+        cursor: pointer !important;
+    }
 }
 
 .glass-effect {

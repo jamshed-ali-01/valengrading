@@ -21,7 +21,7 @@
             @method('PATCH')
             <label class="text-sm font-medium text-gray-400">Update Status:</label>
             <select name="status" class="bg-[#15171A] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-red-500 transition-colors">
-                @foreach(['draft', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
+                @foreach(['draft', 'pending_payment', 'order_received', 'processing', 'shipped', 'completed', 'cancelled'] as $status)
                     <option value="{{ $status }}" {{ $submission->status === $status ? 'selected' : '' }}>
                         {{ ucwords(str_replace('_', ' ', $status)) }}
                     </option>
@@ -41,7 +41,7 @@
             <div class="space-y-4">
                 <div>
                     <p class="text-xs text-gray-500">Name</p>
-                    <p class="font-medium text-white">{{ $submission->guest_name ?? $submission->user->name }}</p>
+                    <p class="font-medium text-white">{{ $submission->user->name ?? $submission->guest_name }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500">Email</p>
@@ -120,6 +120,21 @@
             <div class="w-full bg-white/5 rounded-full h-2 mb-8 overflow-hidden">
                 <div class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: {{ $progressPercent }}%"></div>
             </div>
+
+            <!-- Validation Errors -->
+            @if ($errors->any())
+                <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                    <div class="flex items-center gap-2 text-red-500 mb-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="font-bold">Entry Failed</span>
+                    </div>
+                    <ul class="list-disc list-inside text-sm text-red-400">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             @if($remaining > 0)
             <form action="{{ route('admin.submissions.cards.store', $submission) }}" method="POST" class="bg-white/5 rounded-xl p-6 border border-white/5">

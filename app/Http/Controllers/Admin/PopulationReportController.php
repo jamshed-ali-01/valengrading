@@ -64,13 +64,15 @@ class PopulationReportController extends Controller
         return redirect()->route('admin.population.index')->with('success', 'Population Report entry created successfully.');
     }
 
-    public function edit(PopulationReport $populationReport)
+    public function edit($id)
     {
+        $populationReport = PopulationReport::findOrFail($id);
         return view('admin.population.edit', compact('populationReport'));
     }
 
-    public function update(Request $request, PopulationReport $populationReport)
+    public function update(Request $request, $id)
     {
+        $populationReport = PopulationReport::findOrFail($id);
         $validated = $request->validate([
             'year' => 'nullable|string|max:4',
             'brand' => 'nullable|string|max:255',
@@ -101,8 +103,9 @@ class PopulationReportController extends Controller
         return redirect()->route('admin.population.index')->with('success', 'Population Report entry updated successfully.');
     }
 
-    public function destroy(PopulationReport $populationReport)
+    public function destroy($id)
     {
+        $populationReport = PopulationReport::findOrFail($id);
         $populationReport->delete();
         return redirect()->route('admin.population.index')->with('success', 'Population Report entry deleted successfully.');
     }

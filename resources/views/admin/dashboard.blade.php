@@ -374,7 +374,7 @@
                                     $colors = [
                                         'draft' => 'bg-gray-500/20 text-gray-400',
                                         'pending_payment' => 'bg-amber-500/20 text-amber-400',
-                                        'paid' => 'bg-emerald-500/20 text-emerald-400',
+                                        'order_received' => 'bg-emerald-500/20 text-emerald-400',
                                         'processing' => 'bg-red-500/20 text-red-400',
                                         'completed' => 'bg-purple-500/20 text-purple-400',
                                     ];

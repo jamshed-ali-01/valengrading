@@ -253,7 +253,7 @@
                             // Skip payment steps visually
                             $startStep = 1; // Cards Received
 
-                            if(in_array($backendStatus, ['submitted', 'pending_payment', 'paid'])) $progressLevel = 1; // All pre-grading = Cards Received (or just Received)
+                            if(in_array($backendStatus, ['submitted', 'pending_payment', 'order_received'])) $progressLevel = 1; // All pre-grading = Cards Received (or just Received)
                             if($backendStatus == 'processing') $progressLevel = 2; // In Grading
                             if(in_array($backendStatus, ['shipped', 'completed'])) $progressLevel = 5; // Done
 

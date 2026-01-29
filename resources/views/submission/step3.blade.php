@@ -163,8 +163,11 @@
             easyModeDiv.classList.remove('hidden');
             detailedModeDiv.classList.add('hidden');
             
-            // Remove required from detailed inputs
-            document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => el.removeAttribute('required'));
+            // Disable inputs so they don't block validation
+            document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => {
+                el.value = ''; // Clear value
+                el.setAttribute('disabled', 'disabled');
+            });
         } else {
             detailedModeBtn.classList.remove('text-gray-400', 'hover:text-white');
             detailedModeBtn.classList.add('text-white', 'bg-gradient-to-r', 'from-red-600', 'to-[#A3050A]', 'shadow-lg');
@@ -174,6 +177,9 @@
             
             detailedModeDiv.classList.remove('hidden');
             easyModeDiv.classList.add('hidden');
+            
+            // Enable inputs
+            document.querySelectorAll('#cardsContainer input, #cardsContainer select').forEach(el => el.removeAttribute('disabled'));
             
             syncRowsWithCount();
         }
@@ -345,5 +351,6 @@
 
 </script>
 
-@include('components.login-modal')
 @endsection
+
+

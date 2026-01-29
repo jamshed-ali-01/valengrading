@@ -401,7 +401,7 @@ class CardSubmissionController extends Controller
         }
 
         $submission = Submission::with(['user', 'serviceLevel', 'submissionType', 'cards', 'shippingAddress'])->findOrFail($submissionId);
-        $submission->update(['status' => 'paid']);
+        $submission->update(['status' => 'order_received']);
 
         // Generate Certification Numbers and QR Tokens for each card
         if ($submission->card_entry_mode === 'easy') {
@@ -409,6 +409,7 @@ class CardSubmissionController extends Controller
             // (Wait, easy mode cards might not exist in submission_cards if it's bulk)
             // If they don't exist, we create them based on total_cards
             if ($submission->cards->count() === 0) {
+                /*
                 for ($i = 0; $i < $submission->total_cards; $i++) {
                     $submission->cards()->create([
                         'title' => 'Card #' . ($i + 1),
@@ -417,6 +418,7 @@ class CardSubmissionController extends Controller
                     ]);
                 }
                 $submission->load('cards');
+                */
             }
         }
 
@@ -455,7 +457,7 @@ class CardSubmissionController extends Controller
         }
 
         // Keep ID in session for success page refresh but forget after use OR just pass in request
-        // session()->forget('pending_submission_id');
+        session()->forget('pending_submission_id');
         session()->forget('submission_data');
 
         return view('submission.success', compact('submission'));

@@ -15,7 +15,7 @@
     </div>
 
     <div class="bg-[#232528] border border-white/5 rounded-2xl p-8">
-        <form action="{{ route('admin.population.update', $populationReport) }}" method="POST" class="space-y-6">
+        <form action="/admin/population/{{ $populationReport->id }}" method="POST" class="space-y-6">
             @csrf
             @method('PATCH')
 

@@ -1,10 +1,10 @@
 @guest
-<div id="loginModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="loginModal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <!-- Backdrop -->
-    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="loginModalBackdrop"></div>
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity opacity-0" id="loginModalBackdrop"></div>
 
     <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-        <div class="relative transform overflow-hidden rounded-2xl bg-[#1C1E21] border border-white/10 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" id="loginModalPanel">
+        <div class="relative transform overflow-hidden rounded-2xl bg-[#1C1E21] border border-white/10 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-sm opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" id="loginModalPanel">
             
             <!-- Close Button -->
             <div class="absolute right-0 top-0 pr-4 pt-4">
@@ -63,7 +63,7 @@
                 <div class="mt-6 text-center text-sm">
                     <p class="text-gray-400">
                         Not a member?
-                        <a href="{{ route('register') }}" class="font-semibold text-[var(--color-primary)] hover:text-red-400">Start a 14 day free trial</a>
+                        <a href="{{ route('register') }}" class="font-semibold text-[var(--color-primary)] hover:text-red-400">Register</a>
                     </p>
                 </div>
             </div>
@@ -78,6 +78,7 @@
         const panel = document.getElementById('loginModalPanel');
         
         modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden'); // Lock scroll
         
         // Animation
         setTimeout(() => {
@@ -98,6 +99,7 @@
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden'); // Unlock scroll
         }, 300);
     }
 

@@ -126,7 +126,8 @@
             body: formData,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         })
         .then(response => response.json())
@@ -140,6 +141,19 @@
                 // Success
                 window.authCheckPassed = true; // Set flag for parent form
                 closeLoginModal();
+
+                // Update all CSRF tokens on the page with the new one
+                if (data.csrf_token) {
+                    document.querySelectorAll('input[name="_token"]').forEach(input => {
+                        input.value = data.csrf_token;
+                    });
+                    
+                    // Also update the meta tag for future fetch requests
+                    const metaToken = document.querySelector('meta[name="csrf-token"]');
+                    if (metaToken) {
+                        metaToken.setAttribute('content', data.csrf_token);
+                    }
+                }
                 
                 // If there's a parent form waiting to submit (like in step 3), submit it
                 const cardForm = document.getElementById('cardForm');

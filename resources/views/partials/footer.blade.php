@@ -104,7 +104,7 @@
                 </div>
                 <div
                     class="mt-16 pt-8 border-t border-[var(--color-valen-border)] flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-xs text-gray-600">© {{ date('Y') }} Valen Grading. All rights reserved.</p>
+                    <p class="text-xs text-gray-600">© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
                     <div class="flex gap-8">
                         <!-- <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Privacy Policy</a>
                         <a href="#" class="text-xs text-gray-600 hover:text-white transition-colors">Terms of

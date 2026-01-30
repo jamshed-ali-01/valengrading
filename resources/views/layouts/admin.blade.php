@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') - {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin Dashboard') - {{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('images/logo.avif') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -17,7 +19,7 @@
                     <img src="{{ asset('images/logo.avif') }}" class="h-full w-full object-contain" alt="Logo">
                 </div>
                 <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-[#A3050A] truncate">
-                    {{ \App\Models\SiteSetting::get('site_name', 'Valen Grading') }}
+                    {{ config('app.name') }}
                 </h1>
             </div>
             

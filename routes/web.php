@@ -16,6 +16,7 @@ Route::get('/', function () {
 
 Route::get('/faq', function () {
     $faqs = \App\Models\Faq::where('is_active', true)
+        ->where('show_on_home', false)
         ->orderBy('category')
         ->orderBy('order')
         ->get();

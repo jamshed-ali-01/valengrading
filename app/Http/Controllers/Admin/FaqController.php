@@ -31,7 +31,7 @@ class FaqController extends Controller
         ]);
 
         $validated['is_active'] = $request->has('is_active');
-        $validated['show_on_home'] = $request->has('show_on_home');
+        $validated['show_on_home'] = (bool) $request->input('show_on_home');
 
         Faq::create($validated);
 
@@ -55,7 +55,8 @@ class FaqController extends Controller
         ]);
 
         $validated['is_active'] = $request->has('is_active');
-        $validated['show_on_home'] = $request->has('show_on_home');
+        // For radio buttons, we use the value directly (cast to bool handled by validation/model cast if present, but explicit cast safe)
+        $validated['show_on_home'] = (bool) $request->input('show_on_home');
 
         $faq->update($validated);
 

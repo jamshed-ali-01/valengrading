@@ -51,11 +51,26 @@
                             <span class="ms-3 text-sm font-medium text-gray-300">Active</span>
                         </label>
 
-                        <label class="flex items-center cursor-pointer">
-                            <input type="checkbox" name="show_on_home" value="1" {{ old('show_on_home', $faq->show_on_home) ? 'checked' : '' }} class="sr-only peer">
-                            <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-300">Show on Homepage</span>
-                        </label>
+                        <div class="space-y-3">
+                            <span class="text-xs font-semibold text-gray-500 uppercase">Display Location</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-white/5 bg-[#1C1E21] hover:bg-[#2A2C30] cursor-pointer transition-all">
+                                    <input type="radio" name="show_on_home" value="0" {{ old('show_on_home', $faq->show_on_home) == 0 ? 'checked' : '' }} class="w-4 h-4 text-red-500 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-medium text-gray-200">FAQ Page</span>
+                                        <span class="text-xs text-gray-500">Show on the dedicated FAQ page</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-white/5 bg-[#1C1E21] hover:bg-[#2A2C30] cursor-pointer transition-all">
+                                    <input type="radio" name="show_on_home" value="1" {{ old('show_on_home', $faq->show_on_home) == 1 ? 'checked' : '' }} class="w-4 h-4 text-red-500 bg-gray-700 border-gray-600 focus:ring-red-500 focus:ring-2">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-medium text-gray-200">Homepage</span>
+                                        <span class="text-xs text-gray-500">Show on the main landing page</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
